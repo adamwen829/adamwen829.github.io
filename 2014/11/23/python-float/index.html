@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Python与浮点数 | Darkof</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="在周六参加 TDD Workshop 的时候, 遇到一个问题就是因为涉及到浮点数运算导致单元测试迟迟通不过- -. 回来就在这方面查了查 #简单的例子12345In [1]: 0.1 + 0.2 == 0.3Out[1]: FalseIn [4]: round(2.675, 2)Out[4]: 2.67 简单说这个就是因为浮点数的问题引起的, 也导致我们浮点数的单元测试没有通过. #关于浮点数不管">
+<meta name="keywords" content="Python,float,浮点数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python与浮点数">
+<meta property="og:url" content="https://www.darkof.com/2014/11/23/python-float/index.html">
+<meta property="og:site_name" content="Darkof">
+<meta property="og:description" content="在周六参加 TDD Workshop 的时候, 遇到一个问题就是因为涉及到浮点数运算导致单元测试迟迟通不过- -. 回来就在这方面查了查 #简单的例子12345In [1]: 0.1 + 0.2 == 0.3Out[1]: FalseIn [4]: round(2.675, 2)Out[4]: 2.67 简单说这个就是因为浮点数的问题引起的, 也导致我们浮点数的单元测试没有通过. #关于浮点数不管">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/IEEE_754_Double_Floating_Point_Format.svg/1236px-IEEE_754_Double_Floating_Point_Format.svg.png">
+<meta property="og:updated_time" content="2018-01-01T14:49:41.059Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python与浮点数">
+<meta name="twitter:description" content="在周六参加 TDD Workshop 的时候, 遇到一个问题就是因为涉及到浮点数运算导致单元测试迟迟通不过- -. 回来就在这方面查了查 #简单的例子12345In [1]: 0.1 + 0.2 == 0.3Out[1]: FalseIn [4]: round(2.675, 2)Out[4]: 2.67 简单说这个就是因为浮点数的问题引起的, 也导致我们浮点数的单元测试没有通过. #关于浮点数不管">
+<meta name="twitter:image" content="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/IEEE_754_Double_Floating_Point_Format.svg/1236px-IEEE_754_Double_Floating_Point_Format.svg.png">
+<meta name="twitter:creator" content="@https:&#x2F;&#x2F;www.twitter.com&#x2F;wenxiaobin">
+  
+    <link rel="alternative" href="/atom.xml" title="Darkof" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-37387757-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Darkof</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Adam Wen&#39;s Blog</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="www.darkof.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-python-float" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/23/python-float/" class="article-date">
+  <time datetime="2014-11-23T09:26:29.000Z" itemprop="datePublished">2014-11-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Python与浮点数
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在周六参加 TDD Workshop 的时候, 遇到一个问题就是因为涉及到浮点数运算导致单元测试迟迟通不过- -. 回来就在这方面查了查</p>
+<p>#简单的例子<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">1</span>]: <span class="number">0.1</span> + <span class="number">0.2</span> == <span class="number">0.3</span></span><br><span class="line">Out[<span class="number">1</span>]: <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">In [<span class="number">4</span>]: round(<span class="number">2.675</span>, <span class="number">2</span>)</span><br><span class="line">Out[<span class="number">4</span>]: <span class="number">2.67</span></span><br></pre></td></tr></table></figure></p>
+<p>简单说这个就是因为浮点数的问题引起的, 也导致我们浮点数的单元测试没有通过.</p>
+<p>#关于浮点数<br>不管是什么数, 在计算机中最终都会被转化为 0 和 1 进行存储, 所以我们需要先弄明白以下几点问题</p>
+<ul>
+<li>一个小数如何转化为二进制</li>
+<li>浮点数的二进制如何存储</li>
+</ul>
+<p>##浮点数的二进制表示<br>首先我们要了解浮点数二进制表示, 有以下两个原则:  </p>
+<ul>
+<li>整数部分对 2 取余然后逆序排列</li>
+<li>小数部分乘 2 取整数部分, 然后顺序排列</li>
+</ul>
+<h3 id="2-25-的二进制表示是"><a href="#2-25-的二进制表示是" class="headerlink" title="2.25 的二进制表示是?"></a>2.25 的二进制表示是?</h3><p>整数部分的二进制表示为 10, 小数部分我们逐步来算<br>0.25 * 2 = 0.5        整数部分取 0<br>0.5 * 2 = 1.0        整数部分取 1<br>所以 2.25 的二进制表示为 10.01</p>
+<h3 id="0-1-的表示是什么"><a href="#0-1-的表示是什么" class="headerlink" title="0.1 的表示是什么?"></a>0.1 的表示是什么?</h3><p>我们继续按照浮点数的二进制表示来计算<br>0.1 * 2 = 0.2        整数部分取 0<br>0.2 * 2 = 0.4        整数部分取 0<br>0.4 * 2 = 0.8        整数部分取 0<br>0.8 * 2 = 1.6        整数部分取 1<br>0.6 * 2 = 1.2        整数部分取 1<br>0.2 * 2 = 0.4        整数部分取 0<br>…</p>
+<p>所以你会发现, 0.1 的二进制表示是 0.00011001100110011001100110011……0011<br>0011作为二进制小数的循环节不断的进行循环.</p>
+<p>这就引出了一个问题, 你永远不能存下 0.1 的二进制, 即使你把全世界的硬盘都放在一起, 也存不下 0.1 的二进制小数.</p>
+<p>##浮点数的二进制存储<br>Python 和 C 一样, 采用 <a href="http://www.cs.berkeley.edu/~wkahan/ieee754status/IEEE754.PDF" target="_blank" rel="noopener">IEEE 754</a> 规范来存储浮点数. <a href="http://www.cs.berkeley.edu/~wkahan/ieee754status/IEEE754.PDF" target="_blank" rel="noopener">IEEE 754</a> 对双精度浮点数的存储规范将 64 bit 分为 3 部分.</p>
+<ul>
+<li>第 1 bit 位用来存储 符号, 决定这个数是正数还是负数</li>
+<li>然后使用 11 bit 来存储指数部分</li>
+<li>剩下的 52 bit 用来存储尾数<br><img src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/IEEE_754_Double_Floating_Point_Format.svg/1236px-IEEE_754_Double_Floating_Point_Format.svg.png" alt="Double-precision_floating-point_format"></li>
+</ul>
+<p>而且可以指出的是, double 能存储的数的个数是有限的, double 能代表的数必然不超过 2^64 个, 那么现实世界上有多少个小数呢? 无限个. 计算机能做的只能是一个接近这个小数的值, 是这个值在一定精度下与逻辑认为的值相等. 换句话说, 每个小数的存储(但是不是所有的), 都会伴有精度的丢失.</p>
+<p>#浮点数计算的问题</p>
+<p>现在我们可以看一开始提到的例子</p>
+<h2 id="0-1-0-2-0-3"><a href="#0-1-0-2-0-3" class="headerlink" title="0.1 + 0.2 == 0.3"></a>0.1 + 0.2 == 0.3</h2><p>≈<br>0.1 在 Python 中真正的数字是 0.1000000000000000055511151231257827021181583404541015625<br>0.2 在 Python 中真正的数字是 0.200000000000000011102230246251565404236316680908203125<br>0.3 在 Python 中真正的数字是 0.299999999999999988897769753748434595763683319091796875</p>
+<p>这就是为什么 0.1 + 0.2 != 0.3 的原因</p>
+<h2 id="round-2-675-2"><a href="#round-2-675-2" class="headerlink" title="round(2.675, 2)"></a>round(2.675, 2)</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">4</span>]: round(<span class="number">2.675</span>, <span class="number">2</span>)</span><br><span class="line">Out[<span class="number">4</span>]: <span class="number">2.67</span></span><br></pre></td></tr></table></figure>
+<p>为什么 2.675 精确两位小数之后不是 2.68 呢, 因为 2.675 在计算机中真正的数字是 2.67499999999999982236431605997495353221893310546875</p>
+<p>坑啊坑.</p>
+<p>#我是如何遇到了这个问题<br>简单地说是因为我理解错了 decimal 这个模块的用法.<br>我一开始的使用方式是<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">14</span>]: Decimal(<span class="number">2.675</span>) * Decimal(<span class="number">1.2</span>)</span><br><span class="line">Out[<span class="number">14</span>]: Decimal(<span class="string">'3.209999999999999668043315637'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>因为没有仔细看库手册导致的错误使用. 正确的用法是:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">15</span>]: Decimal(<span class="string">'2.675'</span>) * Decimal(<span class="string">'1.2'</span>)</span><br><span class="line">Out[<span class="number">15</span>]: Decimal(<span class="string">'3.2100'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>将字符串传入 Decimal, 而将数字直接传入, 它的效果是查看该数字在计算机中实际存储的数字.</p>
+<p>#decimal是如何实现的计算精准<br>我粗略的过了一下 decimal 这个库的源代码, 这个根据 <a href="http://speleotrove.com/decimal/decarith.html" target="_blank" rel="noopener">General Decimal Arithmetic Specification</a> 来设计, 简单地说就是将传入的字符串记录符号, 记录一个大数(整数和小数部分直接拼接而成), 记录小数点位置, 然后重写这个类的 operation进行实现.</p>
+<p>#参考<br><a href="http://stackoverflow.com/questions/14572101/using-decimal-in-python" target="_blank" rel="noopener">using-decimal-in-python</a><br><a href="http://legacy.python.org/dev/peps/pep-0327/" target="_blank" rel="noopener">PEP327 Decimal Data Type</a><br><a href="http://justjavac.com/codepuzzle/2012/11/11/codepuzzle-float-who-stole-your-accuracy.html" target="_blank" rel="noopener">代码之谜（五）- 浮点数（谁偷了你的精度？）</a><br><a href="http://en.wikipedia.org/wiki/Double-precision_floating-point_format" target="_blank" rel="noopener">Double-precision floating-point format</a><br><a href="https://docs.python.org/2/tutorial/floatingpoint.html" target="_blank" rel="noopener">Floating Point Arithmetic: Issues and Limitations</a><br><a href="http://www.cs.berkeley.edu/~wkahan/ieee754status/IEEE754.PDF" target="_blank" rel="noopener">IEEE 754</a><br><a href="https://github.com/python/cpython/blob/master/Lib/_pydecimal.py" target="_blank" rel="noopener">Decimal Code</a><br><a href="http://speleotrove.com/decimal/decarith.html" target="_blank" rel="noopener">General Decimal Arithmetic<br>Specification</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://www.darkof.com/2014/11/23/python-float/" data-id="cjbweuabw0065pdwcluee358m" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="https://www.darkof.com/2014/11/23/python-float/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/float/">float</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/浮点数/">浮点数</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/03/06/amazon-s3-boto-note/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          Amazon S3 的坑
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2014/11/07/bye-dream/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">再见了, 我的梦想</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/数据库/">数据库</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Uncategorized/">Uncategorized</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/code-snippet/">code snippet</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/code-snippet/django/">django</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/database/">database</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/database/postgres/">postgres</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/django/">django</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/go/">go</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/joke/">joke</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/joke/闲言/">闲言</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tools/">tools</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/闲言/">闲言</a><span class="category-list-count">16</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/404/" style="font-size: 10px;">404</a> <a href="/tags/Decorator/" style="font-size: 13.33px;">Decorator</a> <a href="/tags/Duck-Typing/" style="font-size: 10px;">Duck_Typing</a> <a href="/tags/MongoDB/" style="font-size: 10px;">MongoDB</a> <a href="/tags/OO/" style="font-size: 10px;">OO</a> <a href="/tags/Python/" style="font-size: 16.67px;">Python</a> <a href="/tags/Regex/" style="font-size: 10px;">Regex</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/aws/" style="font-size: 10px;">aws</a> <a href="/tags/cPickle/" style="font-size: 10px;">cPickle</a> <a href="/tags/chm/" style="font-size: 10px;">chm</a> <a href="/tags/decorator/" style="font-size: 10px;">decorator</a> <a href="/tags/django/" style="font-size: 13.33px;">django</a> <a href="/tags/django-meta/" style="font-size: 10px;">django meta</a> <a href="/tags/float/" style="font-size: 10px;">float</a> <a href="/tags/go/" style="font-size: 10px;">go</a> <a href="/tags/http/" style="font-size: 10px;">http</a> <a href="/tags/jekyell/" style="font-size: 10px;">jekyell</a> <a href="/tags/linux/" style="font-size: 13.33px;">linux</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/mock/" style="font-size: 10px;">mock</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/postgres/" style="font-size: 10px;">postgres</a> <a href="/tags/pyenv/" style="font-size: 10px;">pyenv</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/qdu/" style="font-size: 10px;">qdu</a> <a href="/tags/requests/" style="font-size: 10px;">requests</a> <a href="/tags/s3/" style="font-size: 10px;">s3</a> <a href="/tags/sae/" style="font-size: 10px;">sae</a> <a href="/tags/snippets/" style="font-size: 10px;">snippets</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/unittest/" style="font-size: 13.33px;">unittest</a> <a href="/tags/v2ex/" style="font-size: 10px;">v2ex</a> <a href="/tags/virtualenv/" style="font-size: 10px;">virtualenv</a> <a href="/tags/代码风格再烂也烂不过这个政策/" style="font-size: 10px;">代码风格再烂也烂不过这个政策</a> <a href="/tags/公益/" style="font-size: 10px;">公益</a> <a href="/tags/冷/" style="font-size: 10px;">冷</a> <a href="/tags/呓语/" style="font-size: 10px;">呓语</a> <a href="/tags/多态/" style="font-size: 10px;">多态</a> <a href="/tags/安全/" style="font-size: 10px;">安全</a> <a href="/tags/开源/" style="font-size: 10px;">开源</a> <a href="/tags/浮点数/" style="font-size: 10px;">浮点数</a> <a href="/tags/腾讯微博/" style="font-size: 10px;">腾讯微博</a> <a href="/tags/装饰器/" style="font-size: 13.33px;">装饰器</a> <a href="/tags/运营商缓存/" style="font-size: 10px;">运营商缓存</a> <a href="/tags/重载/" style="font-size: 10px;">重载</a> <a href="/tags/闲言/" style="font-size: 10px;">闲言</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">四月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/07/">七月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05/">五月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/02/">二月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/01/">一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/12/">十二月 2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">十一月 2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/09/">九月 2012</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/02/18/decorator-pits/">Python Decorator 的一些小细节/坑</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/20/-e7-90-86-e8-a7-a3python-e7-9a-84-e8-a3-85-e9-a5-b0-e5-99-a8 (MacBook-Pro-4.local's conflicted copy 2017-02-17)/">理解Python的装饰器</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/14/mysql-offset/">mysql offset 为什么这么慢。。。</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/04/python-global-var/">Python 中的「全局变量」的小细节</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/10/Avoiding-ISP-Caching/">运营商缓存导致的奇葩问题</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="https://twitter.com/eggacheliu" target="_blank">SpecialX</a>
+          </li>
+        
+          <li>
+            <a href="http://www.tifan.net" target="_blank">tifan blog</a>
+          </li>
+        
+          <li>
+            <a href="http://blog.myanthem.cn" target="_blank">wwbensky</a>
+          </li>
+        
+          <li>
+            <a href="http://daily.page7.me" target="_blank">Jerry Leo</a>
+          </li>
+        
+          <li>
+            <a href="http://blog.csdn.net/huntinggo" target="_blank">huntinggo</a>
+          </li>
+        
+          <li>
+            <a href="http://www.the5fire.com" target="_blank">the5fire</a>
+          </li>
+        
+          <li>
+            <a href="http://www.ifanr.com" target="_blank">ifanr</a>
+          </li>
+        
+          <li>
+            <a href="http://www.iwangzheng.com" target="_blank">王筝博客</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Adam Wen<br>
+      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<script>
+  var disqus_shortname = 'darkof';
+  
+  var disqus_url = 'https://www.darkof.com/2014/11/23/python-float/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- 百度分享 start -->
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,920 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Darkof</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Darkof">
+<meta property="og:url" content="https://www.darkof.com/page/2/index.html">
+<meta property="og:site_name" content="Darkof">
+<meta property="og:locale" content="zh-CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Darkof">
+<meta name="twitter:creator" content="@https:&#x2F;&#x2F;www.twitter.com&#x2F;wenxiaobin">
+  
+    <link rel="alternative" href="/atom.xml" title="Darkof" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-37387757-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Darkof</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Adam Wen&#39;s Blog</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="www.darkof.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main">
+  
+    <article id="post-go-learning" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/10/13/go-learning/" class="article-date">
+  <time datetime="2014-10-13T02:38:36.000Z" itemprop="datePublished">2014-10-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/go/">go</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/10/13/go-learning/">go语言学习(一)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##包</p>
+<p>###包的导入方法1:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"math"</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
+<p>###包的导入方法2:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"math"</span></span><br></pre></td></tr></table></figure>
+<p>作为 Pytonista, 更喜欢第 2 种方式 更加简洁.</p>
+<p>##包的变量导出<br>Go 语言通过命名来确定该变量是否是可以导出到外部供别的包所使用.可以被导出的变量通过将变量名的首字母大写来标志确定.</p>
+<p>##函数</p>
+<p>###一个函数可以收 0 到任意多个参数. 接收的参数类型在参数名之后声明:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(x <span class="keyword">int</span>, y <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> x+y</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果一个函数接受的所有参数是同一个类型的时候, 那么可以不需要每一个参数都标明类型, 只需要在最后一个参数上标明类型就可以.<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(x, y <span class="keyword">int</span>)</span></span>&#123; #当多个参数是同一类型时, 可以省略只声明一次.</span><br><span class="line">	<span class="keyword">return</span> x+y</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>###一个函数可以返回多个值<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">swap</span><span class="params">(x, y <span class="keyword">int</span>)</span> <span class="title">int</span>, <span class="title">int</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> y, x</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>###go也可以对返回变量命名<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">split</span><span class="params">(sum <span class="keyword">int</span>)</span> <span class="params">(x, y <span class="keyword">int</span>)</span></span>&#123;</span><br><span class="line">	x = sum * <span class="number">4</span> / <span class="number">9</span></span><br><span class="line">	y = sum - x</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>##变量</p>
+<p>###变量声明<br>go 通过 var 关键字来声明变量, 和函数参数声明一致, 变量类型在变量名之后声明:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> i <span class="keyword">int</span></span><br><span class="line"><span class="keyword">var</span> c, python, java <span class="keyword">bool</span> #三个值都为<span class="keyword">bool</span>类型</span><br></pre></td></tr></table></figure></p>
+<p>###变量初始化<br>变量可以在声明的时候立刻初始化:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> i, j <span class="keyword">int</span> = <span class="number">1</span>, <span class="number">2</span></span><br><span class="line"><span class="keyword">var</span> c, python, java = <span class="literal">true</span>, <span class="literal">false</span>, <span class="string">"no!"</span></span><br></pre></td></tr></table></figure></p>
+<p>###短变量声明<br>短变量声明是一个特殊的使用方法, 有以下特点:</p>
+<ul>
+<li>只能在函数内部使用</li>
+<li>不需要var关键字和类型</li>
+<li>类型通过赋值时隐式声明<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">var</span> i, j <span class="keyword">int</span> = <span class="number">1</span>, <span class="number">2</span></span><br><span class="line">	k := <span class="number">3</span></span><br><span class="line">	c, python, java = <span class="literal">true</span>, <span class="literal">false</span>, <span class="string">"No!"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>###变量类型<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">string</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span>  <span class="keyword">int8</span>  <span class="keyword">int16</span>  <span class="keyword">int32</span>  <span class="keyword">int64</span></span><br><span class="line"><span class="keyword">uint</span> <span class="keyword">uint8</span> <span class="keyword">uint16</span> <span class="keyword">uint32</span> <span class="keyword">uint64</span> <span class="keyword">uintptr</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">byte</span> <span class="comment">// alias for uint8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">rune</span> <span class="comment">// alias for int32</span></span><br><span class="line">     <span class="comment">// represents a Unicode code point</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">float32</span> <span class="keyword">float64</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">complex64</span> <span class="keyword">complex128</span></span><br></pre></td></tr></table></figure></p>
+<p>###常量<br>常量只能使用const关键字生成<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Pi = <span class="number">3.14</span></span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://www.darkof.com/2014/10/13/go-learning/" data-id="cjbweuaaw003hpdwcbolcofw1" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="https://www.darkof.com/2014/10/13/go-learning/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/go/">go</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-postgres-snippet" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/10/10/postgres-snippet/" class="article-date">
+  <time datetime="2014-10-10T07:14:28.000Z" itemprop="datePublished">2014-10-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/database/">database</a>►<a class="article-category-link" href="/categories/database/postgres/">postgres</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/10/10/postgres-snippet/">postgres-snippet</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>创建数据库</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> DATABASE_NAEM;</span><br></pre></td></tr></table></figure>
+<p>删除数据库</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">DATABASE</span> DATABASE_NAME;</span><br></pre></td></tr></table></figure>
+<p>查看所有数据库</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">\list #或者\l</span><br><span class="line">\l+ #显示更详尽的数据库信息</span><br></pre></td></tr></table></figure>
+<p>查看所有用户</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">\du</span><br><span class="line">\du+ #显示更详尽的用户信息</span><br></pre></td></tr></table></figure>
+<p>创建用户</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> USERNAME;</span><br></pre></td></tr></table></figure>
+<p>删除用户</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">USER</span> USERNAME;</span><br></pre></td></tr></table></figure>
+<p>授予用户操作某个DATABASE的所有权限</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> ALL <span class="keyword">ON</span> <span class="keyword">DATABASE</span> DATABASE_NAME <span class="keyword">TO</span> USERNAME;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://www.darkof.com/2014/10/10/postgres-snippet/" data-id="cjbweuabu0062pdwczw6m5g9b" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="https://www.darkof.com/2014/10/10/postgres-snippet/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/postgres/">postgres</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/snippets/">snippets</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-bye" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/09/30/bye/" class="article-date">
+  <time datetime="2014-09-30T05:40:05.000Z" itemprop="datePublished">2014-09-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/09/30/bye/">Bye</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>现在在飞机上, 广州之行在真正的意义上来说, 也是告一段落. 昨晚宝爷给我发微信问我怎么说走就走了, 连一起吃顿饭的机会都没有, 让我想起&lt;后会无期&gt;中的那句话,每一眼都有可能是最后一眼.收拾好东西沉甸甸的行李, 打车来到白云机场, 我尝试看遍这里的每一个角落, 但是还是不现实:).</p>
+<p>昨天下午, 去了一趟北京路. 有的时候就是这么奇妙, 上次和刘狗屎一起逛北京路, 吃了好多好吃的, 走了好多好多路. 不过这次是一个人, 我按照上次的路线, 一个人重复了一遍, 吃了好吃的牛杂, 一个人走过略显萧索的定制服装界, 转过街角, 路过匡威阿迪耐克店, 到了联合书店. 我在书店里来回的踱步, 给弟弟妹妹买了点有广州元素的小礼物, 给朋友买了点小礼物, 就到淘淘居和莲香楼买了一些手信.</p>
+<p>在路上我看到有卖刮刮乐的销售点, 我想和你一起买彩票, 我发短信跟刘狗屎说. 我最终选择了路过, 彩票这种东西对我来说一直是属于智商税, 但是两个人一起的时候, 却格外开心. 真是奇妙的感觉.  </p>
+<p>刚刚经历了半个小时的乱流, 飞机上充斥着小朋友们哭闹的声音, 我刚刚带上耳机. </p>
+<p>然后我就想起了 Swift, 我人生中接触最密切的一只小猫. 我会各种都弄他, 在他要走的那天, 我看到他就那样坐在那里, 背对着我, 望着门外的世界. “外面的世界是什么呢”, 我在朋友圈里给他配了这样的旁白, 但是我知道, 他想说的, 是”要离开了呢”. 现在只是偶尔, 能在 Ray 的朋友圈里看到 Swift, 不知道他还会不会想起我, 那个伸出手和他拍爪子的那个人.</p>
+<p>相聚有时, 后会无期.</p>
+<p>再见.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://www.darkof.com/2014/09/30/bye/" data-id="cjbweuaas0038pdwcmuj8gixc" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="https://www.darkof.com/2014/09/30/bye/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/闲言/">闲言</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post--e5-a6-82-e6-9e-9c-e6-98-af-e7-a8-8b-e5-ba-8f-e5-91-98-e5-81-9a-e4-ba-a7-e5-93-81-e7-bb-8f-e7-90-86" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/08/06/-e5-a6-82-e6-9e-9c-e6-98-af-e7-a8-8b-e5-ba-8f-e5-91-98-e5-81-9a-e4-ba-a7-e5-93-81-e7-bb-8f-e7-90-86/" class="article-date">
+  <time datetime="2014-08-06T13:15:19.000Z" itemprop="datePublished">2014-08-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/闲言/">闲言</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/08/06/-e5-a6-82-e6-9e-9c-e6-98-af-e7-a8-8b-e5-ba-8f-e5-91-98-e5-81-9a-e4-ba-a7-e5-93-81-e7-bb-8f-e7-90-86/">如果是程序员做产品经理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>周六在咖啡馆 和老王 宅里奥还有ray呆到凌晨三点。</p>
+<p>基本上算是做了一把产品经理。</p>
+<p>&nbsp;</p>
+<p>最终让老王放弃了APP中原有的 滑动路径多选 这个功能。</p>
+<p>&nbsp;</p>
+<p>这个功能原本是这个样子的：</p>
+<p>联系人呈M*N二维平铺在手机屏幕上，  手机在屏幕上滑动， 滑动路径经过的人将会成为选中状态, 手指离开屏幕时视为多选完成, 进入下一个操作场景.</p>
+<p>简单地说,  就像是屏幕解锁用的九宫格, 你划过的点视为选中.</p>
+<p>&nbsp;</p>
+<p>老王想要保留这个功能, 但是严格来说这不是一个完整的功能.</p>
+<p>是想一下, 如果你想选择第一行第一个人和最后一行最后一个人, 那么你将无法完成选择.</p>
+<p>同样的, 因为滑动动作被占用,  所以不能像手机通讯录一样滑动遍历所有人, 只能依靠翻页.</p>
+<p>&nbsp;</p>
+<p>所以你想同时选择下一页的人的时候, 这个功能不能满足此需求.</p>
+<p>&nbsp;</p>
+<p>我想到了一个更好的方式, 但是, 在一小部分的功能上, 与国外同款APP相同.</p>
+<p>当老王问我这不是和XXX一样么.</p>
+<p>&nbsp;</p>
+<p>这个时候我问了一个问题, 是问老王的, 也是问我自己的.</p>
+<p>如果有一种体验方式是自然美好的, 但是却让我们背上借(chao)鉴(xi)的嫌疑, 那么我们该怎么做.</p>
+<p>是为用户负责, 使用更加良好的交互方式, 还是为什么别的负责.</p>
+<p>&nbsp;</p>
+<p>到了两点左右的时候宅里奥出了一个demo 然后ray做了一个更加完善的设计,</p>
+<p>这才算是告一段落.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>和宅里奥回来的时候接近三点,</p>
+<p>随便吃了点东西我在想,</p>
+<p>今晚上算是客串了一下产品经理的职位, 在这个角色上, 我发现我是从来没有考虑程序实现的,</p>
+<p>也突然意识到其实这才是产品经理的本分,</p>
+<p>本就不需要考虑程序实现, 哪怕我是个程序员, 我明白身份所赋予的责任.</p>
+<p>&nbsp;</p>
+<p>这样想, 还真是有趣,  当了一次逼死程序员的产品经理, 而我还是程序员…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://www.darkof.com/2014/08/06/-e5-a6-82-e6-9e-9c-e6-98-af-e7-a8-8b-e5-ba-8f-e5-91-98-e5-81-9a-e4-ba-a7-e5-93-81-e7-bb-8f-e7-90-86/" data-id="cjbweua9t000updwcypgk9b79" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="https://www.darkof.com/2014/08/06/-e5-a6-82-e6-9e-9c-e6-98-af-e7-a8-8b-e5-ba-8f-e5-91-98-e5-81-9a-e4-ba-a7-e5-93-81-e7-bb-8f-e7-90-86/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post--e8-ae-b0-e5-bd-95-e4-b8-80-e4-b8-aa-e4-b8-8d-e5-ba-94-e8-af-a5-e7-9a-84-e5-a4-b1-e8-af-af" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/08/05/-e8-ae-b0-e5-bd-95-e4-b8-80-e4-b8-aa-e4-b8-8d-e5-ba-94-e8-af-a5-e7-9a-84-e5-a4-b1-e8-af-af/" class="article-date">
+  <time datetime="2014-08-04T17:36:29.000Z" itemprop="datePublished">2014-08-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/django/">django</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/08/05/-e8-ae-b0-e5-bd-95-e4-b8-80-e4-b8-aa-e4-b8-8d-e5-ba-94-e8-af-a5-e7-9a-84-e5-a4-b1-e8-af-af/">记录一个不应该的失误</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>今天发现 fabu.io 的一个小bug,</p>
+<p>当一个活动的参与人数上到一定量的时候, response慢的令人发指,</p>
+<p>一开始觉得这是一个很奇怪的问题,</p>
+<p>因为已经用了Paginator, 每次Select应该不会这么慢</p>
+<p>看源码才发现一个严重失误.</p>
+<p>源码是呈现这样的一种形式</p>
+<p>foo_info_list = [foo.info for foo in Foo.objects.filter(attr=boo)]<br>paginator = Paginator(foo_info_list, page_size)</p>
+<p>好吧 这样的话结果当然慢的令人发指。</p>
+<p>因为Django的分页器接受的对象只要是Iterable就可以，</p>
+<p>所以当时是这么用的， 没有考虑到数据变大时的性能问题。</p>
+<p>&nbsp;</p>
+<p>后来将foo_queryset代替现有的foo_info_list传入Paginator， 问题得以解决。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>PS：</p>
+<p>今天给www-data配置shell的时候不小心在passwd中写错了shell的路径</p>
+<p>直接无法以www-data身份操作</p>
+<p>查了下发现有个很不错的命令叫做chsh 远门用于切换用户shell</p>
+<p>&nbsp;</p>
+<p>PPS：为什么我这么晚还在写Blog， 是因为我本来要配置qa服务器， 结果连不上去</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://www.darkof.com/2014/08/05/-e8-ae-b0-e5-bd-95-e4-b8-80-e4-b8-aa-e4-b8-8d-e5-ba-94-e8-af-a5-e7-9a-84-e5-a4-b1-e8-af-af/" data-id="cjbweuaae0027pdwcuaewl9tv" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="https://www.darkof.com/2014/08/05/-e8-ae-b0-e5-bd-95-e4-b8-80-e4-b8-aa-e4-b8-8d-e5-ba-94-e8-af-a5-e7-9a-84-e5-a4-b1-e8-af-af/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-mock-e5-b0-8f-e8-ae-b0-e4-b8-80" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/04/13/mock-e5-b0-8f-e8-ae-b0-e4-b8-80/" class="article-date">
+  <time datetime="2014-04-13T13:41:35.000Z" itemprop="datePublished">2014-04-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/04/13/mock-e5-b0-8f-e8-ae-b0-e4-b8-80/">Mock小记(一)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近在用Python写一个Client, 不过单元测试却是个问题, 我不能把自己的用户名密码放到单元测试里,而且这么做每次测试的时间太慢(受网络IO限制)<br>于是找到了这个, mock,<br>在Python 3.3里这个是作为标准库存在于unittest.mock这个包里, 不过我用的是2.7.x就用pip安装了一个</p>
+<p>用mock来修饰函数:</p>
+<p><strong>&gt;&gt;&gt; </strong>from mocks import MagicMock<br><strong>&gt;&gt;&gt; </strong>real = SomeClass()</p>
+<p><strong>&gt;&gt;&gt; </strong>real.method = MagicMock(name=’method’)</p>
+<p><strong>&gt;&gt;&gt; </strong>real.method(3, 4, 5, key=’value’)</p>
+<p>通过一个MagicMock对象我们重写(修饰)了method方法.直接调用real.method()不会有任何动作触发, 也不会返回任何东西</p>
+<p>使用mock来检查对象方法是否被调用过:</p>
+<p><strong>&gt;&gt;&gt; **</strong>from <strong><strong>mock </strong></strong>import <strong>MagicMock </strong>&gt;&gt;&gt; <strong><strong>class </strong></strong>ProductionClass<strong>(object):
+</strong>…          <strong>**def </strong>method(self):<br><strong>…             </strong> self.something(1, 2, 3)<br><strong>…          **</strong>def <strong>something(self, a, b, c):
+</strong>…             ** pass</p>
+<p><strong>&gt;&gt;&gt; </strong>real = ProductionClass()<br><strong>&gt;&gt;&gt; </strong>real.something = MagicMock()<br><strong>&gt;&gt;&gt; </strong>real.method()<br><strong>&gt;&gt;&gt; </strong>real.something.assert_called_once_with(1, 2, 3)  #检查是否只被调用过一次<br><strong>&gt;&gt;&gt; </strong>real.something.assert_called_with(1, 2, 3)  #检查是否被调用过</p>
+<p>mock另外一个常用用法是把mock对象作为参数传入函数:</p>
+<p><strong>&gt;&gt;&gt; **</strong>class <strong>**ProductionClass</strong>(object):<br><strong>…           **</strong>def <strong>closer(self, something):
+</strong>…                <strong>something.close()
+</strong>&gt;&gt;&gt; <strong>real = ProductionClass()
+</strong>&gt;&gt;&gt; <strong>mock = Mock()
+</strong>&gt;&gt;&gt; <strong>real.closer(mock)
+</strong>&gt;&gt;&gt; **mock.close.assert_called_with()</p>
+<p>在这里我们把mock作为参数传入用来检测something.close是否真的被调用(但是不执行任何动作)</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://www.darkof.com/2014/04/13/mock-e5-b0-8f-e8-ae-b0-e4-b8-80/" data-id="cjbweuab1003ppdwcd3bpv25f" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="https://www.darkof.com/2014/04/13/mock-e5-b0-8f-e8-ae-b0-e4-b8-80/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mock/">mock</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post--e5-86-99-e5-87-ba-e5-a5-bd-e7-9a-84-commit-message" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/12/18/-e5-86-99-e5-87-ba-e5-a5-bd-e7-9a-84-commit-message/" class="article-date">
+  <time datetime="2013-12-18T08:11:53.000Z" itemprop="datePublished">2013-12-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/闲言/">闲言</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/12/18/-e5-86-99-e5-87-ba-e5-a5-bd-e7-9a-84-commit-message/">写出好的 commit message</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>转自:<a href="http://ruby-china.org/topics/15737" target="_blank" rel="noopener">http://ruby-china.org/topics/15737</a></p>
+<p>&nbsp;</p>
+<h3 id="为什么要关注提交信息"><a href="#为什么要关注提交信息" class="headerlink" title="为什么要关注提交信息"></a>为什么要关注提交信息</h3><ul>
+<li>加快 Reviewing Code 的过程</li>
+<li>帮助我们写好 release note</li>
+<li>5年后帮你快速想起某个分支，tag或者commit增加了什么功能，改变了哪些代码</li>
+<li>让其他开发者在运行 <code>git blame</code>的时候想跪谢</li>
+<li>总之一个好的提交信息，会帮助你提高项目的整体质量</li>
+</ul>
+<h3 id="基本要求"><a href="#基本要求" class="headerlink" title="基本要求"></a>基本要求</h3><ul>
+<li>第一行应该少于50个字。<strong>随后是一个空行</strong> 第一行题目也可以写成：<code>Fix issue #8976</code></li>
+<li><p>喜欢Vim的哥们把下面这行代码加入<em>.vimrc</em>文件中，来检查拼写和自动折行</p>
+<p>autocmd Filetype gitcommit setlocal spell textwidth=72`</p>
+</li>
+<li><p>永远不在<code>git commit</code> 上增加 <code>-m &amp;lt;msg&amp;gt;</code>或者 <code>--message=&amp;lt;msg&amp;gt;</code>参数，而单独提交信息。<br>一个不好的例子 <code>git commit -m &quot;Fix login bug&quot;</code><br>一个推荐的commit message应该是这样的：</p>
+<pre>`Redirect user to the requested page after login
+
+https://trello.com/path/to/relevant/card
+
+Users were being redirected to the home page after login, which is less
+useful than redirecting to the page they had originally requested before
+being redirected to the login form.
+
+    * Store requested path in a session variable
+    * Redirect to the stored location after successfully logging in the user`</pre></li>
+<li>注释最好包含一个链接指向项目的issue/story/card。一个完整的链接比一个issue number更好</li>
+<li><p>提交信息中包含一个简短的故事，让别人更容易理解你的项目</p>
+<h3 id="注释要回答以下问题"><a href="#注释要回答以下问题" class="headerlink" title="注释要回答以下问题"></a>注释要回答以下问题</h3><p><strong>为什么这次修改是必要的？</strong><br>要告诉Reviewers，你的提交包含什么改变。让他们更容易审核代码和忽略无关的改变。</p>
+<p><strong>如何解决的问题？</strong><br>这可不是说技术细节。看下面的两个例子：<br><pre><code>Introduce a red/black tree to increase search speed 
+  Remove &amp;lt;troublesome gem X&amp;gt;, which was causing &amp;lt;specific description of issue introduced by gem&amp;gt;</code></pre><br>如果你的修改特别明显，就可以忽略这个。</p>
+<p><strong>这些变化可能影响那些地方？</strong><br>这是你最需要回答的问题。因为他会帮助你发现在某个branch或者commit中做了过多的改动。一个提交尽量只做1，2个变化。<br>你的团队应该有一个自己的行为规范，规定每个commit和branch最多能含有多少个功能修改。</p>
+<h3 id="小提示"><a href="#小提示" class="headerlink" title="小提示"></a>小提示</h3></li>
+<li><p>使用fix，add，change而不是fixed，added，changed</p>
+</li>
+<li>永远不要忘了第二行是空行</li>
+<li><p>应<em>Line break</em>来分割提交信息，让它在某些软件里面更容易读</p>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><pre>`Fix bug where user can't signup.
+
+[Bug #2873942]
+
+Users were unable to register if they hadn't visited the plans
+and pricing page because we expected that tracking
+information to exist for the logs we create after a user
+signs up.  I fixed this by adding a check to the logger
+to ensure that if that information was not available
+we weren't trying to write it.`</pre>
+
+<hr>
+<p><pre>`Redirect user to the requested page after login</pre></p>
+<p><a href="https://trello.com/path/to/relevant/card" target="_blank" rel="noopener">https://trello.com/path/to/relevant/card</a></p>
+<p>Users were being redirected to the home page after login, which is less<br>useful than redirecting to the page they had originally requested before<br>being redirected to the login form.</p>
+<ul>
+<li>Store requested path in a session variable</li>
+<li>Redirect to the stored location after successfully logging in the user</li>
+</ul>
+</li>
+</ul>
+<h3 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h3><ul>
+<li><a href="http://web-design-weekly.com/blog/2013/09/01/a-better-git-commit/" target="_blank" rel="noopener">A Note About Git Commit Messages</a></li>
+<li><a href="http://ablogaboutcode.com/2011/03/23/proper-git-commit-messages-and-an-elegant-git-history/" target="_blank" rel="noopener">Writing good commit messages</a></li>
+<li><a href="https://github.com/erlang/otp/wiki/Writing-good-commit-messages" target="_blank" rel="noopener">Proper Git Commit Messages and an Elegant Git History</a></li>
+<li><a href="http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html" target="_blank" rel="noopener">A Better Git Commit</a></li>
+<li><a href="http://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message" target="_blank" rel="noopener">5 Useful Tips For A Better Commit Message</a></li>
+<li><a href="http://whatthecommit.com/" target="_blank" rel="noopener">whatthecommit</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://www.darkof.com/2013/12/18/-e5-86-99-e5-87-ba-e5-a5-bd-e7-9a-84-commit-message/" data-id="cjbweua9q000mpdwcwtdsga7m" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="https://www.darkof.com/2013/12/18/-e5-86-99-e5-87-ba-e5-a5-bd-e7-9a-84-commit-message/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post--e9-92-88-e5-af-b9-e8-a1-8c-e4-b8-ba-e6-b5-8b-e8-af-95-e8-80-8c-e9-9d-9e-e5-ae-9e-e7-8e-b0" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/12/17/-e9-92-88-e5-af-b9-e8-a1-8c-e4-b8-ba-e6-b5-8b-e8-af-95-e8-80-8c-e9-9d-9e-e5-ae-9e-e7-8e-b0/" class="article-date">
+  <time datetime="2013-12-17T13:16:04.000Z" itemprop="datePublished">2013-12-17</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/12/17/-e9-92-88-e5-af-b9-e8-a1-8c-e4-b8-ba-e6-b5-8b-e8-af-95-e8-80-8c-e9-9d-9e-e5-ae-9e-e7-8e-b0/">针对行为测试, 而非实现</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文改编自TotT中的一掌.你可以从这下载打印版本贴在你的办公室里:)</p>
+<p>你可能的开源项目也会会有一个有很多用户使用的可靠的Calculator类:</p>
+<p><pre class="java">public class Calculator {<br>    public int add(int a, int b) {<br>    return a + b;<br>    }<br>}</pre><br>你也会写个测试来确保它是正常的:</p>
+<p>[java]<br>public void testAdd() {<br>assertEquals(3, calculator.add(2, 1));<br>assertEquals(2, calculator.add(2, 0));<br>assertEquals(1, calculator.add(2, -1));<br>}<br>[/java]</p>
+<p>但是一个有特点的库往往会使用一些高级的编码方法来代替简单的加法运算符, 你可以把你的代码改成这样:</p>
+<p>[java]<br>public class Calculator {<br>private AdderFactory adderFactory;<br>public Calculator(AdderFactor adderFactory) {<br>this.adderFactory = adderFactory;<br>}<br>public int add(int a, int b) {<br>Adder adder = adderFactory.createAdder();<br>ReturnValue returnValue = adder.compute(new Number(a),<br>new Number(b));<br>return returnValue.convertToInteger();<br>}<br>}<br>[/java]</p>
+<p>改代码很容易,但是你的测试要怎么改变呢?<br>答案就是: 现有的测试不需要做任何改变. 因为你所改变的仅仅是代码的实现方式,面向用户的行为没有发生任何变化.在大多数哦情况下, 测试应该专注于测试你的代码的public API, 代码实现的细节不应该暴露在测试中.</p>
+<p>测试与具体实现分离, 意味着测试不需要随着具体实现的修改而修改, 这更易于维护. 同时, 测试就如同代码样例, 帮助人们了解这个类的各种使用方法, 即使一个人不怎么熟悉这个库的具体实现也能够通过测试来了解如何使用.</p>
+<p>确实有时候你需要测试具体的代码实现细节(比如想确认你的程序是从cache而不是数据库中读取数据),但这并不常见, 大多数情况的你的测试和具体实现是分离的.</p>
+<p>需要注意的是如果具体实现发生变化, 测试的初始化往往会发生变化(比如你为类的构造函数的新加了一个参数, 那么测试实例化对象的时候也需要传入这个参数).如果面向用户的行为为发生变化, 那么测试就不需要改变</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://www.darkof.com/2013/12/17/-e9-92-88-e5-af-b9-e8-a1-8c-e4-b8-ba-e6-b5-8b-e8-af-95-e8-80-8c-e9-9d-9e-e5-ae-9e-e7-8e-b0/" data-id="cjbweuaag002bpdwcjhambuat" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="https://www.darkof.com/2013/12/17/-e9-92-88-e5-af-b9-e8-a1-8c-e4-b8-ba-e6-b5-8b-e8-af-95-e8-80-8c-e9-9d-9e-e5-ae-9e-e7-8e-b0/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/unittest/">unittest</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-django-e5-8d-95-e5-85-83-e6-b5-8b-e8-af-95-e4-b8-ad-e7-9a-84client" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/12/12/django-e5-8d-95-e5-85-83-e6-b5-8b-e8-af-95-e4-b8-ad-e7-9a-84client/" class="article-date">
+  <time datetime="2013-12-12T01:33:00.000Z" itemprop="datePublished">2013-12-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/code-snippet/">code snippet</a>►<a class="article-category-link" href="/categories/code-snippet/django/">django</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/12/12/django-e5-8d-95-e5-85-83-e6-b5-8b-e8-af-95-e4-b8-ad-e7-9a-84client/">django单元测试中的Client</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>因为要测试的时候需要有不同ip的client来发请求测试 所以需要构造多个不同ip的Client的实例</p>
+<p>在django文档中没有找到, 从stackoverflow查到了一个<a href="http://stackoverflow.com/questions/14749418/how-to-specify-an-ip-address-with-django-test-client#answer-14749559" title="how to specify an ip address with django test client" target="_blank" rel="noopener">不错的答案</a>, 如下:</p>
+<p>[python]</p>
+<p>from django.test.client import Client</p>
+<p>#方法1: 构造实例的时候传入headers中的key value, 以后请求方法自动传递headers<br> client = HttpClient(REMOTE_ADDR=’127.0.0.1’)</p>
+<p>#方法2: 请求的时候附带额外参数声明headers<br> client.get(‘/path/‘, {‘param’:’foo’},<br>            **{‘HTTP_USER_AGENT’:’firefox-22’,<br>            ‘REMOTE_ADDR’:’127.0.0.1’})</p>
+<p>[/python]</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://www.darkof.com/2013/12/12/django-e5-8d-95-e5-85-83-e6-b5-8b-e8-af-95-e4-b8-ad-e7-9a-84client/" data-id="cjbweuaav003fpdwcspxdq07x" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="https://www.darkof.com/2013/12/12/django-e5-8d-95-e5-85-83-e6-b5-8b-e8-af-95-e4-b8-ad-e7-9a-84client/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/django/">django</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/unittest/">unittest</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post--e7-ba-aa-e5-bf-b5-e6-88-91-e5-b7-b2-e7-bb-8f-e4-b8-a2-e5-a4-b1-e7-9a-84-e6-89-8b-e6-9c-ba" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/12/01/-e7-ba-aa-e5-bf-b5-e6-88-91-e5-b7-b2-e7-bb-8f-e4-b8-a2-e5-a4-b1-e7-9a-84-e6-89-8b-e6-9c-ba/" class="article-date">
+  <time datetime="2013-12-01T11:33:01.000Z" itemprop="datePublished">2013-12-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/闲言/">闲言</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/12/01/-e7-ba-aa-e5-bf-b5-e6-88-91-e5-b7-b2-e7-bb-8f-e4-b8-a2-e5-a4-b1-e7-9a-84-e6-89-8b-e6-9c-ba/">纪念我已经丢失的手机</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>就是这样,突然就丢了,亦或是被偷了.就这样,我的LT26ii不见了,从此淡出了我的生活.漂亮的外形,让我至今觉得比iphone5好看,没解锁没刷机也算是对这款Android的褒扬.就这样突然丢了,略微伤心.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://www.darkof.com/2013/12/01/-e7-ba-aa-e5-bf-b5-e6-88-91-e5-b7-b2-e7-bb-8f-e4-b8-a2-e5-a4-b1-e7-9a-84-e6-89-8b-e6-9c-ba/" data-id="cjbweuaa9001vpdwciuzpl4bd" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="https://www.darkof.com/2013/12/01/-e7-ba-aa-e5-bf-b5-e6-88-91-e5-b7-b2-e7-bb-8f-e4-b8-a2-e5-a4-b1-e7-9a-84-e6-89-8b-e6-9c-ba/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    <a class="extend prev" rel="prev" href="/">&laquo; 上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/">下一页 &raquo;</a>
+  </nav>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/数据库/">数据库</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Uncategorized/">Uncategorized</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/code-snippet/">code snippet</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/code-snippet/django/">django</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/database/">database</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/database/postgres/">postgres</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/django/">django</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/go/">go</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/joke/">joke</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/joke/闲言/">闲言</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tools/">tools</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/闲言/">闲言</a><span class="category-list-count">16</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/404/" style="font-size: 10px;">404</a> <a href="/tags/Decorator/" style="font-size: 13.33px;">Decorator</a> <a href="/tags/Duck-Typing/" style="font-size: 10px;">Duck_Typing</a> <a href="/tags/MongoDB/" style="font-size: 10px;">MongoDB</a> <a href="/tags/OO/" style="font-size: 10px;">OO</a> <a href="/tags/Python/" style="font-size: 16.67px;">Python</a> <a href="/tags/Regex/" style="font-size: 10px;">Regex</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/aws/" style="font-size: 10px;">aws</a> <a href="/tags/cPickle/" style="font-size: 10px;">cPickle</a> <a href="/tags/chm/" style="font-size: 10px;">chm</a> <a href="/tags/decorator/" style="font-size: 10px;">decorator</a> <a href="/tags/django/" style="font-size: 13.33px;">django</a> <a href="/tags/django-meta/" style="font-size: 10px;">django meta</a> <a href="/tags/float/" style="font-size: 10px;">float</a> <a href="/tags/go/" style="font-size: 10px;">go</a> <a href="/tags/http/" style="font-size: 10px;">http</a> <a href="/tags/jekyell/" style="font-size: 10px;">jekyell</a> <a href="/tags/linux/" style="font-size: 13.33px;">linux</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/mock/" style="font-size: 10px;">mock</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/postgres/" style="font-size: 10px;">postgres</a> <a href="/tags/pyenv/" style="font-size: 10px;">pyenv</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/qdu/" style="font-size: 10px;">qdu</a> <a href="/tags/requests/" style="font-size: 10px;">requests</a> <a href="/tags/s3/" style="font-size: 10px;">s3</a> <a href="/tags/sae/" style="font-size: 10px;">sae</a> <a href="/tags/snippets/" style="font-size: 10px;">snippets</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/unittest/" style="font-size: 13.33px;">unittest</a> <a href="/tags/v2ex/" style="font-size: 10px;">v2ex</a> <a href="/tags/virtualenv/" style="font-size: 10px;">virtualenv</a> <a href="/tags/代码风格再烂也烂不过这个政策/" style="font-size: 10px;">代码风格再烂也烂不过这个政策</a> <a href="/tags/公益/" style="font-size: 10px;">公益</a> <a href="/tags/冷/" style="font-size: 10px;">冷</a> <a href="/tags/呓语/" style="font-size: 10px;">呓语</a> <a href="/tags/多态/" style="font-size: 10px;">多态</a> <a href="/tags/安全/" style="font-size: 10px;">安全</a> <a href="/tags/开源/" style="font-size: 10px;">开源</a> <a href="/tags/浮点数/" style="font-size: 10px;">浮点数</a> <a href="/tags/腾讯微博/" style="font-size: 10px;">腾讯微博</a> <a href="/tags/装饰器/" style="font-size: 13.33px;">装饰器</a> <a href="/tags/运营商缓存/" style="font-size: 10px;">运营商缓存</a> <a href="/tags/重载/" style="font-size: 10px;">重载</a> <a href="/tags/闲言/" style="font-size: 10px;">闲言</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">四月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/07/">七月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05/">五月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/02/">二月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/01/">一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/12/">十二月 2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">十一月 2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/09/">九月 2012</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/02/18/decorator-pits/">Python Decorator 的一些小细节/坑</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/20/-e7-90-86-e8-a7-a3python-e7-9a-84-e8-a3-85-e9-a5-b0-e5-99-a8 (MacBook-Pro-4.local's conflicted copy 2017-02-17)/">理解Python的装饰器</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/14/mysql-offset/">mysql offset 为什么这么慢。。。</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/04/python-global-var/">Python 中的「全局变量」的小细节</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/10/Avoiding-ISP-Caching/">运营商缓存导致的奇葩问题</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="https://twitter.com/eggacheliu" target="_blank">SpecialX</a>
+          </li>
+        
+          <li>
+            <a href="http://www.tifan.net" target="_blank">tifan blog</a>
+          </li>
+        
+          <li>
+            <a href="http://blog.myanthem.cn" target="_blank">wwbensky</a>
+          </li>
+        
+          <li>
+            <a href="http://daily.page7.me" target="_blank">Jerry Leo</a>
+          </li>
+        
+          <li>
+            <a href="http://blog.csdn.net/huntinggo" target="_blank">huntinggo</a>
+          </li>
+        
+          <li>
+            <a href="http://www.the5fire.com" target="_blank">the5fire</a>
+          </li>
+        
+          <li>
+            <a href="http://www.ifanr.com" target="_blank">ifanr</a>
+          </li>
+        
+          <li>
+            <a href="http://www.iwangzheng.com" target="_blank">王筝博客</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Adam Wen<br>
+      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<script>
+  var disqus_shortname = 'darkof';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- 百度分享 start -->
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

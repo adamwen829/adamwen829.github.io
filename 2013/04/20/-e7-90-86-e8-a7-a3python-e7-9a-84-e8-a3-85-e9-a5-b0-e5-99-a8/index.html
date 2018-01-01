@@ -1,0 +1,816 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>理解Python的装饰器 | Darkof</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="原文出自stackoverflow，英文好的同学可以直接戳这里,如果是人人看的那么可能排版不太好，可以戳这里 Python的函数也是对象为了理解装饰器，你必须首先要理解python里的函数也是对象。这是一个很重要的概念，我们可以来看个小例子： def shout(word=&quot;yes&quot;):     return word.capitalize()+&quot;!&quot;  print shout() # 输出 :">
+<meta name="keywords" content="python,Decorator,装饰器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解Python的装饰器">
+<meta property="og:url" content="https://www.darkof.com/2013/04/20/-e7-90-86-e8-a7-a3python-e7-9a-84-e8-a3-85-e9-a5-b0-e5-99-a8/index.html">
+<meta property="og:site_name" content="Darkof">
+<meta property="og:description" content="原文出自stackoverflow，英文好的同学可以直接戳这里,如果是人人看的那么可能排版不太好，可以戳这里 Python的函数也是对象为了理解装饰器，你必须首先要理解python里的函数也是对象。这是一个很重要的概念，我们可以来看个小例子： def shout(word=&quot;yes&quot;):     return word.capitalize()+&quot;!&quot;  print shout() # 输出 :">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-01-01T14:49:41.032Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="理解Python的装饰器">
+<meta name="twitter:description" content="原文出自stackoverflow，英文好的同学可以直接戳这里,如果是人人看的那么可能排版不太好，可以戳这里 Python的函数也是对象为了理解装饰器，你必须首先要理解python里的函数也是对象。这是一个很重要的概念，我们可以来看个小例子： def shout(word=&quot;yes&quot;):     return word.capitalize()+&quot;!&quot;  print shout() # 输出 :">
+<meta name="twitter:creator" content="@https:&#x2F;&#x2F;www.twitter.com&#x2F;wenxiaobin">
+  
+    <link rel="alternative" href="/atom.xml" title="Darkof" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-37387757-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Darkof</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Adam Wen&#39;s Blog</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="www.darkof.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post--e7-90-86-e8-a7-a3python-e7-9a-84-e8-a3-85-e9-a5-b0-e5-99-a8" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/04/20/-e7-90-86-e8-a7-a3python-e7-9a-84-e8-a3-85-e9-a5-b0-e5-99-a8/" class="article-date">
+  <time datetime="2013-04-20T13:11:47.000Z" itemprop="datePublished">2013-04-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/python/">python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      理解Python的装饰器
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原文出自stackoverflow，英文好的同学可以直接戳<a href="http://stackoverflow.com/questions/739654/how-can-i-make-a-chain-of-function-decorators-in-python#answer-739665" target="_blank" rel="noopener">这里</a>,如果是人人看的那么可能排版不太好，可以戳<a href="http://www.darkof.com/?p=187" title="理解Python的装饰器">这里</a></p>
+<h2 id="Python的函数也是对象"><a href="#Python的函数也是对象" class="headerlink" title="Python的函数也是对象"></a>Python的函数也是对象</h2><p>为了理解装饰器，你必须首先要理解python里的函数也是对象。这是一个很重要的概念，我们可以来看个小例子：</p>
+<pre class="lang:python decode:true">def shout(word="yes"):
+    return word.capitalize()+"!"
+
+print shout()
+# 输出 : 'Yes!'
+
+# 作为一个对象，你可以像其他对象一样，将他赋给一个变量
+scream = shout
+
+# 注意我们没有使用shout() 因为我们不是在调用shout这个函数，
+# 我们把shout这个函数传递给给scream
+# 这意味着我们可以调用scream来代替调用shoot
+print scream()
+# 输出 : 'Yes!'
+
+# 不仅如此，你删掉shout， 仍然可以调用scream
+del shout
+try:
+    print shout()
+except NameError, e:
+    print e
+    #outputs: "name 'shout' is not defined"
+
+print scream()
+# 输出: 'Yes!'</pre>
+我们先把上面的概念记下，过会我们会再回来。
+
+&nbsp;
+
+&nbsp;
+
+## Python里函数的另外一个特性：函数可以定义在另外一个函数内（函数中定义函数）
+
+<pre class="lang:python decode:true">def talk():
+    # 你可以在函数“talk”中定义一个函数
+    def whisper(word="yes"):
+        return word.lower()+"..."
+
+    # 然后在“talk”函数里直接使用“whisper”
+    print whisper()
+
+# 你调用了内部定义了“whisper”的talk函数，
+# 每一次调用talk，talk中的whisper也会被调用
+talk()
+# 输出: 
+#    "yes..."
+
+# 但是在talk函数之外并不存在whisper:
+try:
+    print whisper()
+except NameError, e:
+    print e
+    # 输出 : "name 'whisper' is not defined"</pre>
+
+<p>## </p>
+<p>## </p>
+<h2 id="函数引用"><a href="#函数引用" class="headerlink" title="函数引用"></a><span style="color: #000000; font-weight: bold;">函数引用</span></h2><p>从上面的例子可以看出函数是对象，因此：</p>
+<ul>
+<li>可以传递给变量</li>
+<li><p>可以在另一个函数中定义<br>这意味着一个函数可以返回另外一个函数（返回值是一个函数），我们看一下例子：<br><pre class="lang:python decode:true">def getTalk(type=”shout”):</pre></p>
+<h1 id="我们接着定义函数"><a href="#我们接着定义函数" class="headerlink" title="我们接着定义函数"></a>我们接着定义函数</h1><p>def shout(word=”yes”):</p>
+<pre><code>return word.capitalize()+&quot;!&quot;
+</code></pre><p>def whisper(word=”yes”) :</p>
+<pre><code>return word.lower()+&quot;...&quot;;
+</code></pre><h1 id="然后返回定义的两个函数中的一个"><a href="#然后返回定义的两个函数中的一个" class="headerlink" title="然后返回定义的两个函数中的一个"></a>然后返回定义的两个函数中的一个</h1><p>if type == “shout”:</p>
+<pre><code># 我们不使用（），因为在这里我们不是在调用它
+# 返回一个函数对象
+return shout  
+</code></pre><p>else:</p>
+<pre><code>return whisper
+</code></pre></li>
+</ul>
+<h1 id="你怎么使用这个东西？"><a href="#你怎么使用这个东西？" class="headerlink" title="你怎么使用这个东西？"></a>你怎么使用这个东西？</h1><h1 id="得到一个函数对象然后传递给一个变量"><a href="#得到一个函数对象然后传递给一个变量" class="headerlink" title="得到一个函数对象然后传递给一个变量"></a>得到一个函数对象然后传递给一个变量</h1><p>talk = getTalk()      </p>
+<h1 id="你可以看到这里的talk是一个函数对象"><a href="#你可以看到这里的talk是一个函数对象" class="headerlink" title="你可以看到这里的talk是一个函数对象"></a>你可以看到这里的talk是一个函数对象</h1><p>print talk</p>
+<h1 id="输出-lt-function-shout-at-0xb7ea817c-gt"><a href="#输出-lt-function-shout-at-0xb7ea817c-gt" class="headerlink" title="输出 : &lt;function shout at 0xb7ea817c&gt;"></a>输出 : &lt;function shout at 0xb7ea817c&gt;</h1><h1 id="这个对象是函数返回的一个对象"><a href="#这个对象是函数返回的一个对象" class="headerlink" title="这个对象是函数返回的一个对象"></a>这个对象是函数返回的一个对象</h1><p>print talk()</p>
+<h1 id="输出-Yes"><a href="#输出-Yes" class="headerlink" title="输出 : Yes!"></a>输出 : Yes!</h1><h1 id="你也可以直接用一种很难看的方式直接调用"><a href="#你也可以直接用一种很难看的方式直接调用" class="headerlink" title="你也可以直接用一种很难看的方式直接调用"></a>你也可以直接用一种很难看的方式直接调用</h1><p>print getTalk(“whisper”)()</p>
+<h1 id="输出-yes…"><a href="#输出-yes…" class="headerlink" title="输出 : yes…"></a>输出 : yes…</h1><p>既然你可以返回一个函数，那么你也可以传递一个函数对象作为参数</p>
+<pre class="lang:python decode:true">def doSomethingBefore(func): 
+    print "I do something before then I call the function you gave me"
+    print func()
+
+doSomethingBefore(scream)
+# 输出: 
+# I do something before then I call the function you gave me
+# Yes!</pre>
+你应该已经能够理解装饰器了。装饰器就是一种包装，能够让你在不改变函数本身的情况下，在其之前或之后执行代码
+
+&nbsp;
+
+&nbsp;
+
+## 手工实现装饰器
+
+你会如何实现一个装饰器呢？
+<pre class="lang:python decode:true"># 一个装饰器是一个能够接收另外一个函数作为参数的函数
+def my_shiny_new_decorator(a_function_to_decorate):
+
+    # 装饰器在内部定义了一个函数：the_wrapper_around_the_original_function
+    # 这是一个对原始函数（a_function_to_decorate）进行包装的函数
+    # 所以它可以在原始函数（a_function_to_decorate）之前或者之后执行一些代码
+    def the_wrapper_around_the_original_function():
+
+        # 在这里实现一些你希望在原函数执行前执行的代码
+        print "Before the function runs"
+
+        # 在这里调用原函数
+        a_function_to_decorate()
+
+        # 在这里实现一些需要在原函数执行后执行的代码
+        print "After the function runs"
+
+    # 在这时，a_function_todecorate还没有被执行（这是定义过程）
+    # 我们返回我们刚刚创建的装饰器函数：the_wrapper_around_the_original_function
+    # 这个装饰器包括了原函数以及我们在其之前和之后需要执行的代码
+    return the_wrapper_around_the_original_function
+
+# 现在来考虑创建一个你不会再直接调用的函数
+def a_stand_alone_function():
+    print "I am a stand alone function, don't you dare modify me"
+
+a_stand_alone_function() 
+# 输出: I am a stand alone function, don't you dare modify me
+
+# 现在通过装饰它来扩展它的行为
+# 只需要将它传给装饰器，它就会动态的被装饰
+# 然后你会得到一个新的可以使用的函数
+
+a_stand_alone_function_decorated = my_shiny_new_decorator(a_stand_alone_function)
+a_stand_alone_function_decorated()
+# 输出:
+#    Before the function runs
+#    I am a stand alone function, don't you dare modify me
+#    After the function runs</pre>
+现在，你每次想调用a_stand_alone_function，都通过调用a_stand_alone_function_decorated来代替。
+
+这个很好解决， 通过my_shiny_new_decorator返回的函数来重写a_stand_alone_function_decorated
+<pre class="lang:python decode:true">a_stand_alone_function = my_shiny_new_decorator(a_stand_alone_function)
+a_stand_alone_function()
+#输出:
+# Before the function runs
+# I am a stand alone function, don't you dare modify me
+# After the function runs# And guess what? That's EXACTLY what decorators do!</pre>
+&nbsp;
+
+## 揭开装饰器的面纱（好吧，我承认这个副标题略二）
+
+之前的例子，我们通过使用装饰器语法来实现：
+<pre class="lang:default decode:true">@my_shiny_new_decorator
+def another_stand_alone_function():
+    print "Leave me alone"
+
+another_stand_alone_function()  
+#输出:  
+#Before the function runs
+#Leave me alone
+#After the function runs</pre>
+就这没简单，
+
+@decorator等同于：
+<pre class="lang:python decode:true">another_stand_alone_function = my_shiny_new_decorator(another_stand_alone_function)</pre>
+&nbsp;
+
+装饰器是 设计模式中装饰者模式的python实现。这些经典的设计模式都 被内嵌在python中来简化开发，就像iterators（迭代器）一样。
+
+当然，你可以同时使用多个装饰器（手动装饰器实现）：
+<pre class="lang:python decode:true">def bread(func):
+    def wrapper():
+        print "&lt;/''''''&gt;"
+        func()
+        print "&lt;______/&gt;"
+    return wrapper
+
+def ingredients(func):
+    def wrapper():
+        print "#tomatoes#"
+        func()
+        print "~salad~"
+    return wrapper
+
+def sandwich(food="--ham--"):
+    print food
+
+sandwich()
+#输出: --ham--
+
+sandwich = bread(ingredients(sandwich))
+sandwich()
+#输出:
+#&lt;/''''''&gt;
+# #tomatoes#
+# --ham--
+# ~salad~
+#&lt;______/&gt;</pre>
+使用python语法糖实现：
+<pre class="lang:python decode:true">@bread
+@ingredients
+def sandwich(food="--ham--"):
+    print food
+
+sandwich()
+#输出:
+#&lt;/''''''&gt;
+# #tomatoes#
+# --ham--
+# ~salad~
+#&lt;______/&gt;
+The order you set the decorators MATTERS:
+
+@ingredients
+@bread
+def strange_sandwich(food="--ham--"):
+    print food
+
+strange_sandwich()
+#输出:
+##tomatoes#
+#&lt;/''''''&gt;
+# --ham--
+#&lt;______/&gt;
+# ~salad~</pre>
+&nbsp;
+
+接下来我们来看一些关于装饰器的高级用法
+
+向被装饰的函数传递参数
+<pre class="lang:python decode:true"># 这不是什么黑魔法，你只需像装饰器传递参数
+
+def a_decorator_passing_arguments(function_to_decorate):
+    def a_wrapper_accepting_arguments(arg1, arg2):
+        print "I got args! Look:", arg1, arg2
+        function_to_decorate(arg1, arg2)
+    return a_wrapper_accepting_arguments
+
+# 当你调用由装饰器返回的函数，
+# 也就是你在调用a_wrapper_accepting_arguments这个函数，
+# 把参数传递给wrapper然后再让它把参数传递给被装饰的原函数
+
+@a_decorator_passing_arguments
+def print_full_name(first_name, last_name):
+    print "My name is", first_name, last_name
+
+print_full_name("Peter", "Venkman")
+# 输出:
+#I got args! Look: Peter Venkman
+#My name is Peter Venkman</pre>
+
+<p>## </p>
+<p>## </p>
+<h2 id="装饰对象的方法"><a href="#装饰对象的方法" class="headerlink" title="装饰对象的方法"></a>装饰对象的方法</h2><p>在Python中对象和方法是很相似的，不同之处在于方法需要将当前对象的因作为第一个参数传递进去。这意味考虑到self之后，你用相同的办法可以为方法创建装饰器，</p>
+<p><pre class="lang:python decode:true">def method_friendly_decorator(method_to_decorate):<br>    def wrapper(self, lie):<br>        lie = lie - 3 # very friendly, decrease age even more :-)<br>        return method_to_decorate(self, lie)<br>    return wrapper</pre></p>
+<p>class Lucy(object):</p>
+<pre><code>def __init__(self):
+    self.age = 32
+
+@method_friendly_decorator
+def sayYourAge(self, lie):
+    print &quot;I am %s, what did you think?&quot; % (self.age + lie)
+</code></pre><p>l = Lucy()<br>l.sayYourAge(-3)</p>
+<p>#输出: I am 26, what did you think?<br>当然，如果你想创建一个通用与函数（function）与方法（method）的装饰器，不需要考虑参数如何，只要用<em>args和*</em>kwargs就行</p>
+<p><pre class="lang:python decode:true">def a_decorator_passing_arbitrary_arguments(function_to_decorate):</pre></p>
+<pre><code># 装饰器接收所有任何参数
+def a_wrapper_accepting_arbitrary_arguments(*args, **kwargs):
+    print &quot;Do I have args?:&quot;
+    print args
+    print kwargs
+    # 然后解压缩参数，在这是*args和**kwargs
+    # 如果你对压缩和解压缩参数不熟悉，
+    # 看这：http://www.saltycrane.com/blog/2008/01/how-to-use-args-and-kwargs-in-python/
+    function_to_decorate(*args, **kwargs)
+return a_wrapper_accepting_arbitrary_arguments
+</code></pre><p>@a_decorator_passing_arbitrary_arguments</p>
+<p>def function_with_no_argument():<br>    print “Python is cool, no argument here.”</p>
+<p>function_with_no_argument()</p>
+<p>#输出：</p>
+<p>#Do I have args?:</p>
+<p>#()</p>
+<p>#{}</p>
+<p>#Python is cool, no argument here.</p>
+<p>@a_decorator_passing_arbitrary_arguments</p>
+<p>def function_with_arguments(a, b, c):<br>    print a, b, c</p>
+<p>function_with_arguments(1,2,3)</p>
+<p>#输出：</p>
+<p>#Do I have args?:</p>
+<p>#(1, 2, 3)</p>
+<p>#{}</p>
+<p>#1 2 3 </p>
+<p>@a_decorator_passing_arbitrary_arguments</p>
+<p>def function_with_named_arguments(a, b, c, platypus=”Why not ?”):<br>    print “Do %s, %s and %s like platypus? %s” %<br>    (a, b, c, platypus)</p>
+<p>function_with_named_arguments(“Bill”, “Linus”, “Steve”, platypus=”Indeed!”)</p>
+<p>#输出：</p>
+<p>#Do I have args ? :</p>
+<p>#(‘Bill’, ‘Linus’, ‘Steve’)</p>
+<p>#{‘platypus’: ‘Indeed!’}</p>
+<p>#Do Bill, Linus and Steve like platypus? Indeed!</p>
+<p>class Mary(object):</p>
+<pre><code>def __init__(self):
+    self.age = 31
+
+@a_decorator_passing_arbitrary_arguments
+def sayYourAge(self, lie=-3): # You can now add a default value
+    print &quot;I am %s, what did you think ?&quot; % (self.age + lie)
+</code></pre><p>m = Mary()<br>m.sayYourAge()</p>
+<p>#输出：</p>
+<h1 id="Do-I-have-args"><a href="#Do-I-have-args" class="headerlink" title="Do I have args?:"></a>Do I have args?:</h1><p>#(&lt;<strong>main</strong>.Mary object at 0xb7d303ac&gt;,)</p>
+<p>#{}</p>
+<p>#I am 28, what did you think?<br>&nbsp;</p>
+<h2 id="向装饰器传递参数"><a href="#向装饰器传递参数" class="headerlink" title="向装饰器传递参数"></a>向装饰器传递参数</h2><p>现在你可能想知道如何向装饰器本身传递参数。你可能不解为什么要这么做，因为之前的装饰器必须接受一个函数作为参数，但不能把被装饰的函数直接传递给装饰器</p>
+<p><pre class="lang:python decode:true"># 装饰器是个普通的函数</pre></p>
+<p>def my_decorator(func):<br>    print “I am a ordinary function”<br>    def wrapper():<br>        print “I am function returned by the decorator”<br>        func()<br>    return wrapper</p>
+<h1 id="所以你可以直接调用而不不使用"><a href="#所以你可以直接调用而不不使用" class="headerlink" title="所以你可以直接调用而不不使用@"></a>所以你可以直接调用而不不使用@</h1><p>def lazy_function():<br>    print “zzzzzzzz”</p>
+<p>decorated_function = my_decorator(lazy_function)</p>
+<h1 id="输出-I-am-a-ordinary-function"><a href="#输出-I-am-a-ordinary-function" class="headerlink" title="输出: I am a ordinary function"></a>输出: I am a ordinary function</h1><h1 id="它输出-“I-am-a-ordinary-function”-因为你调用了它"><a href="#它输出-“I-am-a-ordinary-function”-因为你调用了它" class="headerlink" title="它输出 “I am a ordinary function”, 因为你调用了它"></a>它输出 “I am a ordinary function”, 因为你调用了它</h1><p>@my_decorator</p>
+<p>def lazy_function():<br>    print “zzzzzzzz”</p>
+<h1 id="输出-I-am-a-ordinary-function-1"><a href="#输出-I-am-a-ordinary-function-1" class="headerlink" title="输出: I am a ordinary function"></a>输出: I am a ordinary function</h1><p>my_decorator的调用和使用@my_decorator是十分相似的。你让通过被变量标志的my_decorator来让python调用它。这很重要，因为这个标志可以让你直接指出装饰器</p>
+<p><pre class="lang:python decode:true">def decorator_maker():</pre></p>
+<pre><code>print &quot;I make decorators! I am executed only once: &quot;+
+      &quot;when you make me create a decorator.&quot;
+
+def my_decorator(func):
+
+    print &quot;I am a decorator! I am executed only when you decorate a function.&quot;
+
+    def wrapped():
+        print (&quot;I am the wrapper around the decorated function. &quot;
+              &quot;I am called when you call the decorated function. &quot;
+              &quot;As the wrapper, I return the RESULT of the decorated function.&quot;)
+        return func()
+
+    print &quot;As the decorator, I return the wrapped function.&quot;
+
+    return wrapped
+
+print &quot;As a decorator maker, I return a decorator&quot;
+return my_decorator
+</code></pre><h1 id="我们来创建一个装饰器"><a href="#我们来创建一个装饰器" class="headerlink" title="我们来创建一个装饰器."></a>我们来创建一个装饰器.</h1><p>new_decorator = decorator_maker()       </p>
+<h1 id="输出"><a href="#输出" class="headerlink" title="输出:"></a>输出:</h1><h1 id="I-make-decorators-I-am-executed-only-once-when-you-make-me-create-a-decorator"><a href="#I-make-decorators-I-am-executed-only-once-when-you-make-me-create-a-decorator" class="headerlink" title="I make decorators! I am executed only once: when you make me create a decorator"></a>I make decorators! I am executed only once: when you make me create a decorator</h1><h1 id="As-a-decorator-maker-I-return-a-decorator"><a href="#As-a-decorator-maker-I-return-a-decorator" class="headerlink" title="As a decorator maker, I return a decorator"></a>As a decorator maker, I return a decorator</h1><h1 id="然后我们来装饰一个函数"><a href="#然后我们来装饰一个函数" class="headerlink" title="然后我们来装饰一个函数"></a>然后我们来装饰一个函数</h1><p>def decorated_function():<br>    print “I am the decorated function.”</p>
+<p>decorated_function = new_decorator(decorated_function)</p>
+<h1 id="outputs"><a href="#outputs" class="headerlink" title="outputs:"></a>outputs:</h1><h1 id="I-am-a-decorator-I-am-executed-only-when-you-decorate-a-function"><a href="#I-am-a-decorator-I-am-executed-only-when-you-decorate-a-function" class="headerlink" title="I am a decorator! I am executed only when you decorate a function."></a>I am a decorator! I am executed only when you decorate a function.</h1><h1 id="As-the-decorator-I-return-the-wrapped-function"><a href="#As-the-decorator-I-return-the-wrapped-function" class="headerlink" title="As the decorator, I return the wrapped function"></a>As the decorator, I return the wrapped function</h1><h1 id="我们调用一下这个被装饰过的方法"><a href="#我们调用一下这个被装饰过的方法" class="headerlink" title="我们调用一下这个被装饰过的方法:"></a>我们调用一下这个被装饰过的方法:</h1><p>decorated_function()</p>
+<p>#输出:</p>
+<h1 id="I-am-the-wrapper-around-the-decorated-function-I-am-called-when-you-call-the"><a href="#I-am-the-wrapper-around-the-decorated-function-I-am-called-when-you-call-the" class="headerlink" title="I am the wrapper around the decorated function. I am called when you call the"></a>I am the wrapper around the decorated function. I am called when you call the</h1><h1 id="decorated-function"><a href="#decorated-function" class="headerlink" title="decorated function."></a>decorated function.</h1><h1 id="As-the-wrapper-I-return-the-RESULT-of-the-decorated-function"><a href="#As-the-wrapper-I-return-the-RESULT-of-the-decorated-function" class="headerlink" title="As the wrapper, I return the RESULT of the decorated function."></a>As the wrapper, I return the RESULT of the decorated function.</h1><h1 id="I-am-the-decorated-function"><a href="#I-am-the-decorated-function" class="headerlink" title="I am the decorated function."></a>I am the decorated function.</h1><p>再让我们跳过中间变量来实现同样的事情</p>
+<p><pre class="lang:python decode:true">def decorated_function():<br>    print “I am the decorated function.”<br>decorated_function = decorator_maker()(decorated_function)</pre></p>
+<h1 id="输出-1"><a href="#输出-1" class="headerlink" title="输出:"></a>输出:</h1><h1 id="I-make-decorators-I-am-executed-only-once-when-you-make-me-create-a-decorator-1"><a href="#I-make-decorators-I-am-executed-only-once-when-you-make-me-create-a-decorator-1" class="headerlink" title="I make decorators! I am executed only once: when you make me create a decorator"></a>I make decorators! I am executed only once: when you make me create a decorator</h1><h1 id="As-a-decorator-maker-I-return-a-decorator-1"><a href="#As-a-decorator-maker-I-return-a-decorator-1" class="headerlink" title="As a decorator maker, I return a decorator"></a>As a decorator maker, I return a decorator</h1><h1 id="I-am-a-decorator-I-am-executed-only-when-you-decorate-a-function-1"><a href="#I-am-a-decorator-I-am-executed-only-when-you-decorate-a-function-1" class="headerlink" title="I am a decorator! I am executed only when you decorate a function."></a>I am a decorator! I am executed only when you decorate a function.</h1><h1 id="As-the-decorator-I-return-the-wrapped-function-1"><a href="#As-the-decorator-I-return-the-wrapped-function-1" class="headerlink" title="As the decorator, I return the wrapped function."></a>As the decorator, I return the wrapped function.</h1><h1 id="最后"><a href="#最后" class="headerlink" title="最后:"></a>最后:</h1><p>decorated_function()    </p>
+<h1 id="输出-2"><a href="#输出-2" class="headerlink" title="输出:"></a>输出:</h1><h1 id="I-am-the-wrapper-around-the-decorated-function-I-am-called-when-you-call-the-1"><a href="#I-am-the-wrapper-around-the-decorated-function-I-am-called-when-you-call-the-1" class="headerlink" title="I am the wrapper around the decorated function. I am called when you call the"></a>I am the wrapper around the decorated function. I am called when you call the</h1><h1 id="decorated-function-1"><a href="#decorated-function-1" class="headerlink" title="decorated function."></a>decorated function.</h1><h1 id="As-the-wrapper-I-return-the-RESULT-of-the-decorated-function-1"><a href="#As-the-wrapper-I-return-the-RESULT-of-the-decorated-function-1" class="headerlink" title="As the wrapper, I return the RESULT of the decorated function."></a>As the wrapper, I return the RESULT of the decorated function.</h1><h1 id="I-am-the-decorated-function-1"><a href="#I-am-the-decorated-function-1" class="headerlink" title="I am the decorated function."></a>I am the decorated function.</h1><p>让我们通过更简洁方式来实现</p>
+<p><pre class="lang:python decode:true">@decorator_maker()</pre></p>
+<p>def decorated_function():<br>    print “I am the decorated function.”</p>
+<p>#输出:</p>
+<p>#I make decorators! I am executed only once: when you make me create a decorator.</p>
+<p>#As a decorator maker, I return a decorator</p>
+<p>#I am a decorator! I am executed only when you decorate a function.</p>
+<p>#As the decorator, I return the wrapped function.</p>
+<p>#然后就到最后了，调用:<br>decorated_function()    </p>
+<p>#outputs:</p>
+<p>#I am the wrapper around the decorated function. I am called when you call the decorated function.</p>
+<p>#As the wrapper, I return the RESULT of the decorated function.</p>
+<p>#I am the decorated function.<br>你觉得怎么样，我们通过@来进行函数调用</p>
+<p>回到向装饰器传递参数这个问题上。如果我们使用函数来产生装饰器，我们也可以向这个函数传参</p>
+<p><pre class="lang:python decode:true">def decorator_maker_with_arguments(decorator_arg1, decorator_arg2):</pre></p>
+<pre><code>print &quot;I make decorators! And I accept arguments:&quot;, decorator_arg1, decorator_arg2
+
+def my_decorator(func):
+    # 向这传递参数是一种闭包特性
+    # 如果你不喜欢这种闭包特性，你可以把它传给一个变量
+    # 或者看看这：http://stackoverflow.com/questions/13857/can-you-explain-closures-as-they-relate-to-python
+    print &quot;I am the decorator. Somehow you passed me arguments:&quot;, decorator_arg1, decorator_arg2
+
+    # 不要弄混 装饰器的参数 和 被装饰的方法的参数
+    def wrapped(function_arg1, function_arg2) :
+        print (&quot;I am the wrapper around the decorated function.n&quot;
+              &quot;I can access all the variablesn&quot;
+              &quot;t- from the decorator: {0} {1}n&quot;
+              &quot;t- from the function call: {2} {3}n&quot;
+              &quot;Then I can pass them to the decorated function&quot;
+              .format(decorator_arg1, decorator_arg2,
+                      function_arg1, function_arg2))
+        return func(function_arg1, function_arg2)
+
+    return wrapped
+
+return my_decorator
+</code></pre><p>@decorator_maker_with_arguments(“Leonard”, “Sheldon”)</p>
+<p>def decorated_function_with_arguments(function_arg1, function_arg2):<br>    print (“I am the decorated function and only knows about my arguments: {0}”<br>           “ {1}”.format(function_arg1, function_arg2))</p>
+<p>decorated_function_with_arguments(“Rajesh”, “Howard”)</p>
+<p>#输出:</p>
+<p>#I make decorators! And I accept arguments: Leonard Sheldon</p>
+<p>#I am the decorator. Somehow you passed me arguments: Leonard Sheldon</p>
+<p>#I am the wrapper around the decorated function. </p>
+<p>#I can access all the variables </p>
+<h1 id="from-the-decorator-Leonard-Sheldon"><a href="#from-the-decorator-Leonard-Sheldon" class="headerlink" title="- from the decorator: Leonard Sheldon"></a>- from the decorator: Leonard Sheldon</h1><h1 id="from-the-function-call-Rajesh-Howard"><a href="#from-the-function-call-Rajesh-Howard" class="headerlink" title="- from the function call: Rajesh Howard"></a>- from the function call: Rajesh Howard</h1><p>#Then I can pass them to the decorated function</p>
+<p>#I am the decorated function and only knows about my arguments: Rajesh Howard<br>像这样，一个需要参数的装饰器，参数可以以变量的形式传递进去：</p>
+<p><pre class="lang:python decode:true">c1 = “Penny”<br>c2 = “Leslie”</pre></p>
+<p>@decorator_maker_with_arguments(“Leonard”, c1)</p>
+<p>def decorated_function_with_arguments(function_arg1, function_arg2):<br>    print (“I am the decorated function and only knows about my arguments:”<br>           “ {0} {1}”.format(function_arg1, function_arg2))</p>
+<p>decorated_function_with_arguments(c2, “Howard”)</p>
+<p>#输出:</p>
+<p>#I make decorators! And I accept arguments: Leonard Penny</p>
+<p>#I am the decorator. Somehow you passed me arguments: Leonard Penny</p>
+<p>#I am the wrapper around the decorated function. </p>
+<p>#I can access all the variables </p>
+<h1 id="from-the-decorator-Leonard-Penny"><a href="#from-the-decorator-Leonard-Penny" class="headerlink" title="- from the decorator: Leonard Penny"></a>- from the decorator: Leonard Penny</h1><h1 id="from-the-function-call-Leslie-Howard"><a href="#from-the-function-call-Leslie-Howard" class="headerlink" title="- from the function call: Leslie Howard"></a>- from the function call: Leslie Howard</h1><p>#Then I can pass them to the decorated function</p>
+<p>#I am the decorated function and only knows about my arguments: Leslie Howard<br>&nbsp;</p>
+<p>&nbsp;</p>
+<h2 id="做个练习：一个用来装饰装饰器的装饰器"><a href="#做个练习：一个用来装饰装饰器的装饰器" class="headerlink" title="做个练习：一个用来装饰装饰器的装饰器"></a>做个练习：一个用来装饰装饰器的装饰器</h2><p><pre class="lang:python decode:true">def decorator_with_args(decorator_to_enhance):</pre></p>
+<pre><code># 我们像之前那样传递参数
+def decorator_maker(*args, **kwargs):
+
+    # 创建一个只接受函数作为参数的函数 
+    # 但是能够使用maker传递的参数
+    def decorator_wrapper(func):
+
+        # 我们将返回原始的装饰器，就像返回一个普通的函数一样 
+        # IS JUST AN ORDINARY FUNCTION (which returns a function).
+        # 需要注意的是装饰器必须有自己的标识符，否则无法工作
+        return decorator_to_enhance(func, *args, **kwargs)
+
+    return decorator_wrapper
+
+return decorator_maker&lt;/pre&gt;
+</code></pre><p>然后可以这么使用：</p>
+<p><pre class="lang:python decode:true"># 你创造了了一个将作为装饰器使用的函数，然后向里面插入了一个装饰器</pre></p>
+<h1 id="别忘了，插入的装饰器的标识符是-“decorator-func-args-kwargs-”"><a href="#别忘了，插入的装饰器的标识符是-“decorator-func-args-kwargs-”" class="headerlink" title="别忘了，插入的装饰器的标识符是 “decorator(func, args, *kwargs)”"></a>别忘了，插入的装饰器的标识符是 “decorator(func, <em>args, *</em>kwargs)”</h1><p>@decorator_with_args </p>
+<p>def decorated_decorator(func, <em>args, *</em>kwargs):<br>    def wrapper(function_arg1, function_arg2):<br>        print “Decorated with”, args, kwargs<br>        return func(function_arg1, function_arg2)<br>    return wrapper</p>
+<h1 id="然后你可以通过被装饰的装饰器来装饰你的函数"><a href="#然后你可以通过被装饰的装饰器来装饰你的函数" class="headerlink" title="然后你可以通过被装饰的装饰器来装饰你的函数"></a>然后你可以通过被装饰的装饰器来装饰你的函数</h1><p>@decorated_decorator(42, 404, 1024)</p>
+<p>def decorated_function(function_arg1, function_arg2):<br>    print “Hello”, function_arg1, function_arg2</p>
+<p>decorated_function(“Universe and”, “everything”)</p>
+<p>#输出:</p>
+<p>#Decorated with (42, 404, 1024) {}</p>
+<p>#Hello Universe and everything</p>
+<h1 id="酷不"><a href="#酷不" class="headerlink" title="酷不?"></a>酷不?</h1><p>我知道，你上次有这种感觉，应该是听到别人说：“要理解递归，你要先理解递归”的时候。但是掌握了刚才讲的这些之后是不是很爽。</p>
+<p>## </p>
+<h2 id="装饰器范例"><a href="#装饰器范例" class="headerlink" title="装饰器范例"></a>装饰器范例</h2><ul>
+<li>装饰器是Python2.4出现的新特性，确保你的代码跑在2.4或者更高版本上</li>
+<li>记住装饰器会延缓函数调用</li>
+<li>不能取消装饰。有一些方法能创建可以取消的装饰器，但木有人用。一个函数被装饰了，就是被装饰了。</li>
+<li><del>装饰器装饰函数后，会增加debug难度</del><br>Python2.5通过提供functool模块来解决了上述的最后一个问题。functool.wraps会拷贝被装饰函数的名字 模块 文档等到他的包装器中，而<code>functools.wraps</code>本身也是一个装饰器<br><pre class="lang:python decode:true"># 直接用装饰器会显得很杂乱<br>def bar(func):<br>def wrapper():<pre><code>print &quot;bar&quot;
+return func()
+</code></pre>return wrapper</pre></li>
+</ul>
+<p>@bar</p>
+<p>def foo():<br>    print “foo”</p>
+<p>print foo.<strong>name</strong></p>
+<p>#outputs: wrapper</p>
+<h1 id="“functools”-有助于解决这个问题"><a href="#“functools”-有助于解决这个问题" class="headerlink" title="“functools” 有助于解决这个问题"></a>“functools” 有助于解决这个问题</h1><p>import functools</p>
+<p>def bar(func):</p>
+<pre><code># 我们说的包装器（wrapper）是用来包装func的
+# 下面是见证奇迹的时刻
+@functools.wraps(func)
+def wrapper():
+    print &quot;bar&quot;
+    return func()
+return wrapper
+</code></pre><p>@bar</p>
+<p>def foo():<br>    print “foo”</p>
+<p>print foo.<strong>name</strong></p>
+<p>#输出: foo<br>&nbsp;</p>
+<h2 id="如何有效的使用装饰器"><a href="#如何有效的使用装饰器" class="headerlink" title="如何有效的使用装饰器"></a>如何有效的使用装饰器</h2><p>也许你会有个疑问：我可以用装饰器做什么，它看起来很好很强大，但是如果有个实际例子会更好。</p>
+<p>关于在什么情况下使用有很多种可能，传统的用法是当你需要扩展一个外部库函数的行为或者处于debug的需要（但你不想对其直接做做更改，因为这只是临时的），你可以使用一个装饰器来扩展许多函数，不要重写每个函数（DRY原则），举个例子：</p>
+<p><pre class="lang:python decode:true">def benchmark(func):<br>    “””<br>    A decorator that prints the time a function takes<br>    to execute.<br>    “””<br>    import time<br>    def wrapper(<em>args, **kwargs):<br>        t = time.clock()<br>        res = func(</em>args, **kwargs)<br>        print func.<strong>name</strong>, time.clock()-t<br>        return res<br>    return wrapper</pre></p>
+<p>def logging(func):<br>    “””<br>    A decorator that logs the activity of the script.<br>    (it actually just prints it, but it could be logging!)<br>    “””<br>    def wrapper(<em>args, **kwargs):<br>        res = func(</em>args, **kwargs)<br>        print func.<strong>name</strong>, args, kwargs<br>        return res<br>    return wrapper</p>
+<p>def counter(func):<br>    “””<br>    A decorator that counts and prints the number of times a function has been executed<br>    “””<br>    def wrapper(<em>args, **kwargs):<br>        wrapper.count = wrapper.count + 1<br>        res = func(</em>args, **kwargs)<br>        print “{0} has been used: {1}x”.format(func.<strong>name</strong>, wrapper.count)<br>        return res<br>    wrapper.count = 0<br>    return wrapper</p>
+<p>@counter<br>@benchmark<br>@logging</p>
+<p>def reverse_string(string):<br>    return str(reversed(string))</p>
+<p>print reverse_string(“Able was I ere I saw Elba”)<br>print reverse_string(“A man, a plan, a canoe, pasta, heros, rajahs, a coloratura, maps, snipe, percale, macaroni, a gag, a banana bag, a tan, a tag, a banana bag again (or a camel), a crepe, pins, Spam, a rut, a Rolo, cash, a jar, sore hats, a peon, a canal: Panama!”)</p>
+<p>#输出:</p>
+<p>#reverse_string (‘Able was I ere I saw Elba’,) {}</p>
+<p>#wrapper 0.0</p>
+<p>#wrapper has been used: 1x </p>
+<p>#ablE was I ere I saw elbA</p>
+<p>#reverse_string (‘A man, a plan, a canoe, pasta, heros, rajahs, a coloratura, maps, snipe, percale, macaroni, a gag, a banana bag, a tan, a tag, a banana bag again (or a camel), a crepe, pins, Spam, a rut, a Rolo, cash, a jar, sore hats, a peon, a canal: Panama!’,) {}</p>
+<p>#wrapper 0.0</p>
+<p>#wrapper has been used: 2x</p>
+<p>#!amanaP :lanac a ,noep a ,stah eros ,raj a ,hsac ,oloR a ,tur a ,mapS ,snip ,eperc a ,)lemac a ro( niaga gab ananab a ,gat a ,nat a ,gab ananab a ,gag a ,inoracam ,elacrep ,epins ,spam ,arutaroloc a ,shajar ,soreh ,atsap ,eonac a ,nalp a ,nam A<br>&nbsp;</p>
+<p>而使用装饰器的好处是是不需要做多余的重写就能立刻使用：</p>
+<p><pre class="lang:python decode:true">@counter<br>@benchmark<br>@logging</pre></p>
+<p>def get_random_futurama_quote():<br>    import httplib<br>    conn = httplib.HTTPConnection(“slashdot.org:80”)<br>    conn.request(“HEAD”, “/index.html”)<br>    for key, value in conn.getresponse().getheaders():<br>        if key.startswith(“x-b”) or key.startswith(“x-f”):<br>            return value<br>    return “No, I’m … doesn’t!”</p>
+<p>print get_random_futurama_quote()<br>print get_random_futurama_quote()</p>
+<p>#输出:</p>
+<p>#get_random_futurama_quote () {}</p>
+<p>#wrapper 0.02</p>
+<p>#wrapper has been used: 1x</p>
+<p>#The laws of science be a harsh mistress.</p>
+<p>#get_random_futurama_quote () {}</p>
+<p>#wrapper 0.01</p>
+<p>#wrapper has been used: 2x</p>
+<p>#Curse you, merciful Poseidon!<br>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Python本身提供了许多装饰器：property, staticmethod等等。Django使用装饰器来捕获和查看权限等，装饰器用途广泛</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>原文出自：<a href="http://stackoverflow.com/questions/739ddd654/how-can-i-make-a-chain-of-function-decorators-in-python/1594484#1594484" target="_blank" rel="noopener">http://stackoverflow.com/questions/739ddd654/how-can-i-make-a-chain-of-function-decorators-in-python/1594484#1594484</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://www.darkof.com/2013/04/20/-e7-90-86-e8-a7-a3python-e7-9a-84-e8-a3-85-e9-a5-b0-e5-99-a8/" data-id="cjbweuaab0020pdwc6rwufflr" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="https://www.darkof.com/2013/04/20/-e7-90-86-e8-a7-a3python-e7-9a-84-e8-a3-85-e9-a5-b0-e5-99-a8/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Decorator/">Decorator</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/装饰器/">装饰器</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2013/04/22/422-e6-89-af-e6-b7-a1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          4.22扯淡
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2013/04/20/-e5-85-b3-e4-ba-8edjango-model-e4-b8-ad-e7-9a-84meta/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">关于django model中的meta</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/数据库/">数据库</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Uncategorized/">Uncategorized</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/code-snippet/">code snippet</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/code-snippet/django/">django</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/database/">database</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/database/postgres/">postgres</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/django/">django</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/go/">go</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/joke/">joke</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/joke/闲言/">闲言</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tools/">tools</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/闲言/">闲言</a><span class="category-list-count">16</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/404/" style="font-size: 10px;">404</a> <a href="/tags/Decorator/" style="font-size: 13.33px;">Decorator</a> <a href="/tags/Duck-Typing/" style="font-size: 10px;">Duck_Typing</a> <a href="/tags/MongoDB/" style="font-size: 10px;">MongoDB</a> <a href="/tags/OO/" style="font-size: 10px;">OO</a> <a href="/tags/Python/" style="font-size: 16.67px;">Python</a> <a href="/tags/Regex/" style="font-size: 10px;">Regex</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/aws/" style="font-size: 10px;">aws</a> <a href="/tags/cPickle/" style="font-size: 10px;">cPickle</a> <a href="/tags/chm/" style="font-size: 10px;">chm</a> <a href="/tags/decorator/" style="font-size: 10px;">decorator</a> <a href="/tags/django/" style="font-size: 13.33px;">django</a> <a href="/tags/django-meta/" style="font-size: 10px;">django meta</a> <a href="/tags/float/" style="font-size: 10px;">float</a> <a href="/tags/go/" style="font-size: 10px;">go</a> <a href="/tags/http/" style="font-size: 10px;">http</a> <a href="/tags/jekyell/" style="font-size: 10px;">jekyell</a> <a href="/tags/linux/" style="font-size: 13.33px;">linux</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/mock/" style="font-size: 10px;">mock</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/postgres/" style="font-size: 10px;">postgres</a> <a href="/tags/pyenv/" style="font-size: 10px;">pyenv</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/qdu/" style="font-size: 10px;">qdu</a> <a href="/tags/requests/" style="font-size: 10px;">requests</a> <a href="/tags/s3/" style="font-size: 10px;">s3</a> <a href="/tags/sae/" style="font-size: 10px;">sae</a> <a href="/tags/snippets/" style="font-size: 10px;">snippets</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/unittest/" style="font-size: 13.33px;">unittest</a> <a href="/tags/v2ex/" style="font-size: 10px;">v2ex</a> <a href="/tags/virtualenv/" style="font-size: 10px;">virtualenv</a> <a href="/tags/代码风格再烂也烂不过这个政策/" style="font-size: 10px;">代码风格再烂也烂不过这个政策</a> <a href="/tags/公益/" style="font-size: 10px;">公益</a> <a href="/tags/冷/" style="font-size: 10px;">冷</a> <a href="/tags/呓语/" style="font-size: 10px;">呓语</a> <a href="/tags/多态/" style="font-size: 10px;">多态</a> <a href="/tags/安全/" style="font-size: 10px;">安全</a> <a href="/tags/开源/" style="font-size: 10px;">开源</a> <a href="/tags/浮点数/" style="font-size: 10px;">浮点数</a> <a href="/tags/腾讯微博/" style="font-size: 10px;">腾讯微博</a> <a href="/tags/装饰器/" style="font-size: 13.33px;">装饰器</a> <a href="/tags/运营商缓存/" style="font-size: 10px;">运营商缓存</a> <a href="/tags/重载/" style="font-size: 10px;">重载</a> <a href="/tags/闲言/" style="font-size: 10px;">闲言</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">四月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/07/">七月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05/">五月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/02/">二月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/01/">一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/12/">十二月 2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">十一月 2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/09/">九月 2012</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/02/18/decorator-pits/">Python Decorator 的一些小细节/坑</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/20/-e7-90-86-e8-a7-a3python-e7-9a-84-e8-a3-85-e9-a5-b0-e5-99-a8 (MacBook-Pro-4.local's conflicted copy 2017-02-17)/">理解Python的装饰器</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/14/mysql-offset/">mysql offset 为什么这么慢。。。</a>
+          </li>
+        
+          <li>
+            <a href="/2016/08/04/python-global-var/">Python 中的「全局变量」的小细节</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/10/Avoiding-ISP-Caching/">运营商缓存导致的奇葩问题</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="https://twitter.com/eggacheliu" target="_blank">SpecialX</a>
+          </li>
+        
+          <li>
+            <a href="http://www.tifan.net" target="_blank">tifan blog</a>
+          </li>
+        
+          <li>
+            <a href="http://blog.myanthem.cn" target="_blank">wwbensky</a>
+          </li>
+        
+          <li>
+            <a href="http://daily.page7.me" target="_blank">Jerry Leo</a>
+          </li>
+        
+          <li>
+            <a href="http://blog.csdn.net/huntinggo" target="_blank">huntinggo</a>
+          </li>
+        
+          <li>
+            <a href="http://www.the5fire.com" target="_blank">the5fire</a>
+          </li>
+        
+          <li>
+            <a href="http://www.ifanr.com" target="_blank">ifanr</a>
+          </li>
+        
+          <li>
+            <a href="http://www.iwangzheng.com" target="_blank">王筝博客</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Adam Wen<br>
+      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<script>
+  var disqus_shortname = 'darkof';
+  
+  var disqus_url = 'https://www.darkof.com/2013/04/20/-e7-90-86-e8-a7-a3python-e7-9a-84-e8-a3-85-e9-a5-b0-e5-99-a8/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- 百度分享 start -->
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>
