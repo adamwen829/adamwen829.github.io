@@ -84,6 +84,77 @@ ga('send', 'pageview');
     <div class="outer">
       <section id="main">
   
+    <article id="post-go-learning" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/10/13/go-learning/" class="article-date">
+  <time datetime="2014-10-13T02:38:36.000Z" itemprop="datePublished">2014-10-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/go/">go</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/10/13/go-learning/">go语言学习(一)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##包</p>
+<p>###包的导入方法1:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"math"</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
+<p>###包的导入方法2:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"math"</span></span><br></pre></td></tr></table></figure>
+<p>作为 Pytonista, 更喜欢第 2 种方式 更加简洁.</p>
+<p>##包的变量导出<br>Go 语言通过命名来确定该变量是否是可以导出到外部供别的包所使用.可以被导出的变量通过将变量名的首字母大写来标志确定.</p>
+<p>##函数</p>
+<p>###一个函数可以收 0 到任意多个参数. 接收的参数类型在参数名之后声明:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(x <span class="keyword">int</span>, y <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> x+y</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果一个函数接受的所有参数是同一个类型的时候, 那么可以不需要每一个参数都标明类型, 只需要在最后一个参数上标明类型就可以.<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(x, y <span class="keyword">int</span>)</span></span>&#123; #当多个参数是同一类型时, 可以省略只声明一次.</span><br><span class="line">	<span class="keyword">return</span> x+y</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>###一个函数可以返回多个值<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">swap</span><span class="params">(x, y <span class="keyword">int</span>)</span> <span class="title">int</span>, <span class="title">int</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> y, x</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>###go也可以对返回变量命名<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">split</span><span class="params">(sum <span class="keyword">int</span>)</span> <span class="params">(x, y <span class="keyword">int</span>)</span></span>&#123;</span><br><span class="line">	x = sum * <span class="number">4</span> / <span class="number">9</span></span><br><span class="line">	y = sum - x</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>##变量</p>
+<p>###变量声明<br>go 通过 var 关键字来声明变量, 和函数参数声明一致, 变量类型在变量名之后声明:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> i <span class="keyword">int</span></span><br><span class="line"><span class="keyword">var</span> c, python, java <span class="keyword">bool</span> #三个值都为<span class="keyword">bool</span>类型</span><br></pre></td></tr></table></figure></p>
+<p>###变量初始化<br>变量可以在声明的时候立刻初始化:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> i, j <span class="keyword">int</span> = <span class="number">1</span>, <span class="number">2</span></span><br><span class="line"><span class="keyword">var</span> c, python, java = <span class="literal">true</span>, <span class="literal">false</span>, <span class="string">"no!"</span></span><br></pre></td></tr></table></figure></p>
+<p>###短变量声明<br>短变量声明是一个特殊的使用方法, 有以下特点:</p>
+<ul>
+<li>只能在函数内部使用</li>
+<li>不需要var关键字和类型</li>
+<li>类型通过赋值时隐式声明<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">var</span> i, j <span class="keyword">int</span> = <span class="number">1</span>, <span class="number">2</span></span><br><span class="line">	k := <span class="number">3</span></span><br><span class="line">	c, python, java = <span class="literal">true</span>, <span class="literal">false</span>, <span class="string">"No!"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>###变量类型<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">string</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span>  <span class="keyword">int8</span>  <span class="keyword">int16</span>  <span class="keyword">int32</span>  <span class="keyword">int64</span></span><br><span class="line"><span class="keyword">uint</span> <span class="keyword">uint8</span> <span class="keyword">uint16</span> <span class="keyword">uint32</span> <span class="keyword">uint64</span> <span class="keyword">uintptr</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">byte</span> <span class="comment">// alias for uint8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">rune</span> <span class="comment">// alias for int32</span></span><br><span class="line">     <span class="comment">// represents a Unicode code point</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">float32</span> <span class="keyword">float64</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">complex64</span> <span class="keyword">complex128</span></span><br></pre></td></tr></table></figure></p>
+<p>###常量<br>常量只能使用const关键字生成<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Pi = <span class="number">3.14</span></span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://www.darkof.com/2014/10/13/go-learning/" data-id="cjvb3r91r0044u8s63s1fmht4" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="https://www.darkof.com/2014/10/13/go-learning/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/go/">go</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-postgres-snippet" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/10/10/postgres-snippet/" class="article-date">
@@ -128,7 +199,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2014/10/10/postgres-snippet/" data-id="cjbweuabu0062pdwczw6m5g9b" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2014/10/10/postgres-snippet/" data-id="cjvb3r9290051u8s6vihip013" class="article-share-link">分享到</a>
       
 
       
@@ -179,7 +250,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2014/09/30/bye/" data-id="cjbweuaas0038pdwcmuj8gixc" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2014/09/30/bye/" data-id="cjvb3r91v004au8s6vnwy0lag" class="article-share-link">分享到</a>
       
 
       
@@ -260,7 +331,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2014/08/06/-e5-a6-82-e6-9e-9c-e6-98-af-e7-a8-8b-e5-ba-8f-e5-91-98-e5-81-9a-e4-ba-a7-e5-93-81-e7-bb-8f-e7-90-86/" data-id="cjbweua9t000updwcypgk9b79" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2014/08/06/-e5-a6-82-e6-9e-9c-e6-98-af-e7-a8-8b-e5-ba-8f-e5-91-98-e5-81-9a-e4-ba-a7-e5-93-81-e7-bb-8f-e7-90-86/" data-id="cjvb3r8zx000vu8s6uxk2jnbj" class="article-share-link">分享到</a>
       
 
       
@@ -328,7 +399,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2014/08/05/-e8-ae-b0-e5-bd-95-e4-b8-80-e4-b8-aa-e4-b8-8d-e5-ba-94-e8-af-a5-e7-9a-84-e5-a4-b1-e8-af-af/" data-id="cjbweuaae0027pdwcuaewl9tv" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2014/08/05/-e8-ae-b0-e5-bd-95-e4-b8-80-e4-b8-aa-e4-b8-8d-e5-ba-94-e8-af-a5-e7-9a-84-e5-a4-b1-e8-af-af/" data-id="cjvb3r90g0020u8s6sca6i763" class="article-share-link">分享到</a>
       
 
       
@@ -393,7 +464,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2014/04/13/mock-e5-b0-8f-e8-ae-b0-e4-b8-80/" data-id="cjbweuab1003ppdwcd3bpv25f" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2014/04/13/mock-e5-b0-8f-e8-ae-b0-e4-b8-80/" data-id="cjvb3r923004nu8s6ar10as1c" class="article-share-link">分享到</a>
       
 
       
@@ -506,7 +577,7 @@ we weren't trying to write it.`</pre>
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2013/12/18/-e5-86-99-e5-87-ba-e5-a5-bd-e7-9a-84-commit-message/" data-id="cjbweua9q000mpdwcwtdsga7m" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2013/12/18/-e5-86-99-e5-87-ba-e5-a5-bd-e7-9a-84-commit-message/" data-id="cjvb3r8zv000pu8s6ho039a8h" class="article-share-link">分享到</a>
       
 
       
@@ -562,7 +633,7 @@ we weren't trying to write it.`</pre>
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2013/12/17/-e9-92-88-e5-af-b9-e8-a1-8c-e4-b8-ba-e6-b5-8b-e8-af-95-e8-80-8c-e9-9d-9e-e5-ae-9e-e7-8e-b0/" data-id="cjbweuaag002bpdwcjhambuat" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2013/12/17/-e9-92-88-e5-af-b9-e8-a1-8c-e4-b8-ba-e6-b5-8b-e8-af-95-e8-80-8c-e9-9d-9e-e5-ae-9e-e7-8e-b0/" data-id="cjvb3r919003gu8s671wk5uzf" class="article-share-link">分享到</a>
       
 
       
@@ -617,7 +688,7 @@ we weren't trying to write it.`</pre>
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2013/12/12/django-e5-8d-95-e5-85-83-e6-b5-8b-e8-af-95-e4-b8-ad-e7-9a-84client/" data-id="cjbweuaav003fpdwcspxdq07x" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2013/12/12/django-e5-8d-95-e5-85-83-e6-b5-8b-e8-af-95-e4-b8-ad-e7-9a-84client/" data-id="cjvb3r91w004bu8s6a7nx9bg6" class="article-share-link">分享到</a>
       
 
       
@@ -666,58 +737,11 @@ we weren't trying to write it.`</pre>
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2013/12/01/-e7-ba-aa-e5-bf-b5-e6-88-91-e5-b7-b2-e7-bb-8f-e4-b8-a2-e5-a4-b1-e7-9a-84-e6-89-8b-e6-9c-ba/" data-id="cjbweuaa9001vpdwciuzpl4bd" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2013/12/01/-e7-ba-aa-e5-bf-b5-e6-88-91-e5-b7-b2-e7-bb-8f-e4-b8-a2-e5-a4-b1-e7-9a-84-e6-89-8b-e6-9c-ba/" data-id="cjvb3r90j0026u8s60fgqexmk" class="article-share-link">分享到</a>
       
 
       
         <a href="https://www.darkof.com/2013/12/01/-e7-ba-aa-e5-bf-b5-e6-88-91-e5-b7-b2-e7-bb-8f-e4-b8-a2-e5-a4-b1-e7-9a-84-e6-89-8b-e6-9c-ba/#disqus_thread" class="article-comment-link">评论</a>
-      
-
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post--e4-b8-87-e4-b8-87-e6-b2-a1-e6-83-b3-e5-88-b0" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2013/11/26/-e4-b8-87-e4-b8-87-e6-b2-a1-e6-83-b3-e5-88-b0/" class="article-date">
-  <time datetime="2013-11-26T13:50:30.000Z" itemprop="datePublished">2013-11-26</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/闲言/">闲言</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2013/11/26/-e4-b8-87-e4-b8-87-e6-b2-a1-e6-83-b3-e5-88-b0/">万万没想到</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>刚才撇了一眼发现ssb项目下, py代码不加上自动生成的sql migrations,  行数突破了2.5W行….万万没想到3个人维护这么多后台代码…..</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="https://www.darkof.com/2013/11/26/-e4-b8-87-e4-b8-87-e6-b2-a1-e6-83-b3-e5-88-b0/" data-id="cjbweua9a0003pdwcfiion7zg" class="article-share-link">分享到</a>
-      
-
-      
-        <a href="https://www.darkof.com/2013/11/26/-e4-b8-87-e4-b8-87-e6-b2-a1-e6-83-b3-e5-88-b0/#disqus_thread" class="article-comment-link">评论</a>
       
 
       
@@ -759,7 +783,7 @@ we weren't trying to write it.`</pre>
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">四月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/07/">七月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05/">五月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/02/">二月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/01/">一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/12/">十二月 2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">十一月 2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/09/">九月 2012</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">四月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/07/">七月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05/">五月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/02/">二月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/01/">一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/12/">十二月 2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">十一月 2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/09/">九月 2012</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -769,6 +793,10 @@ we weren't trying to write it.`</pre>
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/01/14/before-unicode/">before_unicode</a>
+          </li>
         
           <li>
             <a href="/2017/02/18/decorator-pits/">Python Decorator 的一些小细节/坑</a>
@@ -784,10 +812,6 @@ we weren't trying to write it.`</pre>
         
           <li>
             <a href="/2015/05/10/Avoiding-ISP-Caching/">运营商缓存导致的奇葩问题</a>
-          </li>
-        
-          <li>
-            <a href="/2015/03/06/amazon-s3-boto-note/">Amazon S3 的坑</a>
           </li>
         
       </ul>
@@ -845,7 +869,7 @@ we weren't trying to write it.`</pre>
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2018 Adam Wen<br>
+      &copy; 2019 Adam Wen<br>
       Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
       .
       Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>

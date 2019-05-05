@@ -84,6 +84,81 @@ ga('send', 'pageview');
     <div class="outer">
       <section id="main">
   
+    <article id="post-before-unicode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/01/14/before-unicode/" class="article-date">
+  <time datetime="2018-01-14T10:34:35.000Z" itemprop="datePublished">2018-01-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/01/14/before-unicode/">before_unicode</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>打算写几篇 Blog 把之前学习的 Unicode 的一些东西整理下。</p>
+<h2 id="抽象字符表"><a href="#抽象字符表" class="headerlink" title="抽象字符表"></a>抽象字符表</h2><p>这是一个大家了解比较少的概念。简单的说，抽象字符表是「所有抽象字符的集合」</p>
+<p>[image:101F4772-FD64-4E5E-9A4D-ED3C583650A3-297-0000F245656331E5/6D3A3F9F-1349-4F83-B326-B8B952060BE2.png]</p>
+<p>这个字符表可以是<em>封闭</em>的，比如上图的 ASCII，声明有限的 128 个字符，且不允许新字符添加进去。</p>
+<p>字符表也可以是<em>开放</em>的，比如 Unicode 字符表，允许不断地添加字符来拓展字符表。</p>
+<h2 id="编码字符集"><a href="#编码字符集" class="headerlink" title="编码字符集"></a>编码字符集</h2><p>也许你已经被 <em>Unicode</em>, <em>UTF-8</em>, <em>GBK</em>，<em>GBK</em> 扰乱了头脑，现在可以先抛开这些概念，了解一下什么是「编码字符集」</p>
+<p>在上图中，每个「字符」都对应一个值，这个值叫做「码位值（Code Point Value）」，比如在「ASCII 编码字符集」中，字符「A」的码位值是「十进制数 65」</p>
+<p>当我们构建了「抽象字符表的字符」与「码位值」的映射关系时，也就构建了一个编码字符集。</p>
+<h2 id="一些常见字符集"><a href="#一些常见字符集" class="headerlink" title="一些常见字符集"></a>一些常见字符集</h2><ul>
+<li>ASCII：美国信息互换标准编码字符集</li>
+<li><a href="https://zh.wikipedia.org/wiki/GB_2312" target="_blank" rel="noopener">GB 2312</a>：中华人民共和国国家标准简体中文字符集</li>
+<li>Big 5：台湾地区使用的中文字符集</li>
+<li>UCS：通用字符集</li>
+</ul>
+<p>其中 GB 2312 和 Big5 都属于 DBCS （两字节字符集），即这个字符集的空间大小是 2 字节。</p>
+<h2 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h2><p>在我们之前聊的字符集，更多的是逻辑上的映射（比如 A 对应的是 65），但是当我们想要在计算机使用时，我们要解决的一个问题就是如何「存储与传输一个字符」，这就引入了「编码/解码」这个概念</p>
+<p>ASCII 的编解码很简单，就是占用一个 Byte 的定长空间，存储「码位值」的二进制数（比如 A 的码位值是 65，二进制数为 01000001）</p>
+<p>GB 2312 的编码<br>[image:481859E9-52E0-41DD-8E51-2FFF4A4136C5-297-0000F64D7515AC9C/ECA8A5DD-AD0B-414D-8E67-5834239BAEF0.png]</p>
+<ul>
+<li>为了兼容 ASCII，如果一个字符是  ASCII 字符集中的字符，则采用 ASCII 字符集的编码形式，如字符「A」还是转换为「0x41」进行存储</li>
+<li>若是 GB2312 字符集中独有的字符，比如「哦」，对应的码位值为「0xC5B6」，则会存储为两个字节</li>
+</ul>
+<p>GB2312 的解码</p>
+<p>[image:75118E6C-F31D-481B-A90D-F4DFF0677B53-297-0000F6F5721461D1/E95A7FD6-9490-4319-8E4E-D8536E2B960E.png]</p>
+<p>读取一个 Byte，如果值小于 128，在是 ASCII 中的字符。如果大于等于 128，就再读取一个字节，两个字节的值算出「码位值」。</p>
+<h2 id="为什么会有这么多字符集，我们又为什么需要-UCS"><a href="#为什么会有这么多字符集，我们又为什么需要-UCS" class="headerlink" title="为什么会有这么多字符集，我们又为什么需要 UCS"></a>为什么会有这么多字符集，我们又为什么需要 UCS</h2><p>也许是因为我们的短视？</p>
+<p>一开始大家觉得 ASCII 就够用，但是显然不是全世界都在说英语。</p>
+<p>于是大家就开始搞自己的字符集。欧洲人搞了 ASCII 扩展字符集来支持拉丁字母，大陆搞了 GB 2312 支持很多汉字。台湾搞了「Big 5」来支持汉字。</p>
+<p>不过这样搞完之后，我们遇到了新的问题。</p>
+<p>[image:72C80279-B72D-4C2D-8789-BC647AAC4592-297-0000F7CEE660905C/061EE11E-334C-4879-96F0-1EFC2DCF06D3.png]</p>
+<p>同样一个「鄙」字，台湾厂商会按照 Big5 的字符集与编码规则存成「0xBBC0」，大陆用户按照 GB2312 读出来会转换成「焕」。</p>
+<p>对于「發」字，台湾按照 Big5 的字符集与编码规则存成「0xB560」，大陆这边读出来之后发现 GB2312 里这个值找不到对应的字，于是只好显示成「？」了。</p>
+<p>这也是为什么早起很多 PC 用户装台湾的盗版游戏会普遍出现乱码，需要借助「金山快译内码转换器」这种工具的原因，这种工具本质就是帮你把「Big 5 的值转为对应的繁体字，再找到对应的简体字，再转为 GB2312 的值」</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://www.darkof.com/2018/01/14/before-unicode/" data-id="cjvb3r927004yu8s6wfmfc26z" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="https://www.darkof.com/2018/01/14/before-unicode/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-decorator-pits" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/02/18/decorator-pits/" class="article-date">
@@ -127,7 +202,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2017/02/18/decorator-pits/" data-id="cjbweuab3003wpdwcm7ev5qlq" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2017/02/18/decorator-pits/" data-id="cjvb3r91z004hu8s601idqdmi" class="article-share-link">分享到</a>
       
 
       
@@ -179,7 +254,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2016/08/14/mysql-offset/" data-id="cjbweuab5003ypdwcwbchntbd" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2016/08/14/mysql-offset/" data-id="cjvb3r925004tu8s6905hjhik" class="article-share-link">分享到</a>
       
 
       
@@ -245,7 +320,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2016/08/04/python-global-var/" data-id="cjbweuac00067pdwcfa7euub9" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2016/08/04/python-global-var/" data-id="cjvb3r92d005bu8s6cno4no44" class="article-share-link">分享到</a>
       
 
       
@@ -299,7 +374,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2015/05/10/Avoiding-ISP-Caching/" data-id="cjbweuaao002ypdwcvk2m2jb1" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2015/05/10/Avoiding-ISP-Caching/" data-id="cjvb3r91n003yu8s6u741xzxf" class="article-share-link">分享到</a>
       
 
       
@@ -347,7 +422,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2015/03/06/amazon-s3-boto-note/" data-id="cjbweuaar0035pdwc83gp84eg" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2015/03/06/amazon-s3-boto-note/" data-id="cjvb3r91p0041u8s61vd3yjcj" class="article-share-link">分享到</a>
       
 
       
@@ -427,7 +502,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2014/11/23/python-float/" data-id="cjbweuabw0065pdwcluee358m" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2014/11/23/python-float/" data-id="cjvb3r92f005fu8s6e05x41vt" class="article-share-link">分享到</a>
       
 
       
@@ -472,7 +547,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2014/11/07/bye-dream/" data-id="cjbweuaat003cpdwcsrd275gj" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2014/11/07/bye-dream/" data-id="cjvb3r91t0048u8s6st4ya4v6" class="article-share-link">分享到</a>
       
 
       
@@ -529,7 +604,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2014/10/20/unicode-compatible/" data-id="cjbweuac3006dpdwctfo1afhq" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2014/10/20/unicode-compatible/" data-id="cjvb3r92i005mu8s6exyp9lvw" class="article-share-link">分享到</a>
       
 
       
@@ -587,7 +662,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2014/10/17/pyenv-virtualenv/" data-id="cjbweuabt0061pdwc45w8cgps" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2014/10/17/pyenv-virtualenv/" data-id="cjvb3r92a0055u8s6pcm2767a" class="article-share-link">分享到</a>
       
 
       
@@ -596,77 +671,6 @@ ga('send', 'pageview');
 
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pyenv/">pyenv</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/virtualenv/">virtualenv</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-go-learning" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/10/13/go-learning/" class="article-date">
-  <time datetime="2014-10-13T02:38:36.000Z" itemprop="datePublished">2014-10-13</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/go/">go</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/10/13/go-learning/">go语言学习(一)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>##包</p>
-<p>###包的导入方法1:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"math"</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
-<p>###包的导入方法2:</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">"math"</span></span><br></pre></td></tr></table></figure>
-<p>作为 Pytonista, 更喜欢第 2 种方式 更加简洁.</p>
-<p>##包的变量导出<br>Go 语言通过命名来确定该变量是否是可以导出到外部供别的包所使用.可以被导出的变量通过将变量名的首字母大写来标志确定.</p>
-<p>##函数</p>
-<p>###一个函数可以收 0 到任意多个参数. 接收的参数类型在参数名之后声明:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(x <span class="keyword">int</span>, y <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> x+y</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>如果一个函数接受的所有参数是同一个类型的时候, 那么可以不需要每一个参数都标明类型, 只需要在最后一个参数上标明类型就可以.<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(x, y <span class="keyword">int</span>)</span></span>&#123; #当多个参数是同一类型时, 可以省略只声明一次.</span><br><span class="line">	<span class="keyword">return</span> x+y</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>###一个函数可以返回多个值<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">swap</span><span class="params">(x, y <span class="keyword">int</span>)</span> <span class="title">int</span>, <span class="title">int</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> y, x</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>###go也可以对返回变量命名<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">split</span><span class="params">(sum <span class="keyword">int</span>)</span> <span class="params">(x, y <span class="keyword">int</span>)</span></span>&#123;</span><br><span class="line">	x = sum * <span class="number">4</span> / <span class="number">9</span></span><br><span class="line">	y = sum - x</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>##变量</p>
-<p>###变量声明<br>go 通过 var 关键字来声明变量, 和函数参数声明一致, 变量类型在变量名之后声明:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> i <span class="keyword">int</span></span><br><span class="line"><span class="keyword">var</span> c, python, java <span class="keyword">bool</span> #三个值都为<span class="keyword">bool</span>类型</span><br></pre></td></tr></table></figure></p>
-<p>###变量初始化<br>变量可以在声明的时候立刻初始化:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> i, j <span class="keyword">int</span> = <span class="number">1</span>, <span class="number">2</span></span><br><span class="line"><span class="keyword">var</span> c, python, java = <span class="literal">true</span>, <span class="literal">false</span>, <span class="string">"no!"</span></span><br></pre></td></tr></table></figure></p>
-<p>###短变量声明<br>短变量声明是一个特殊的使用方法, 有以下特点:</p>
-<ul>
-<li>只能在函数内部使用</li>
-<li>不需要var关键字和类型</li>
-<li>类型通过赋值时隐式声明<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">var</span> i, j <span class="keyword">int</span> = <span class="number">1</span>, <span class="number">2</span></span><br><span class="line">	k := <span class="number">3</span></span><br><span class="line">	c, python, java = <span class="literal">true</span>, <span class="literal">false</span>, <span class="string">"No!"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>###变量类型<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">string</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span>  <span class="keyword">int8</span>  <span class="keyword">int16</span>  <span class="keyword">int32</span>  <span class="keyword">int64</span></span><br><span class="line"><span class="keyword">uint</span> <span class="keyword">uint8</span> <span class="keyword">uint16</span> <span class="keyword">uint32</span> <span class="keyword">uint64</span> <span class="keyword">uintptr</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">byte</span> <span class="comment">// alias for uint8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">rune</span> <span class="comment">// alias for int32</span></span><br><span class="line">     <span class="comment">// represents a Unicode code point</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">float32</span> <span class="keyword">float64</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">complex64</span> <span class="keyword">complex128</span></span><br></pre></td></tr></table></figure></p>
-<p>###常量<br>常量只能使用const关键字生成<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Pi = <span class="number">3.14</span></span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="https://www.darkof.com/2014/10/13/go-learning/" data-id="cjbweuaaw003hpdwcbolcofw1" class="article-share-link">分享到</a>
-      
-
-      
-        <a href="https://www.darkof.com/2014/10/13/go-learning/#disqus_thread" class="article-comment-link">评论</a>
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/go/">go</a></li></ul>
 
     </footer>
   </div>
@@ -706,7 +710,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">四月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/07/">七月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05/">五月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/02/">二月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/01/">一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/12/">十二月 2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">十一月 2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/09/">九月 2012</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">四月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/07/">七月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05/">五月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/02/">二月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/01/">一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/12/">十二月 2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">十一月 2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/09/">九月 2012</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -716,6 +720,10 @@ ga('send', 'pageview');
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/01/14/before-unicode/">before_unicode</a>
+          </li>
         
           <li>
             <a href="/2017/02/18/decorator-pits/">Python Decorator 的一些小细节/坑</a>
@@ -731,10 +739,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/2015/05/10/Avoiding-ISP-Caching/">运营商缓存导致的奇葩问题</a>
-          </li>
-        
-          <li>
-            <a href="/2015/03/06/amazon-s3-boto-note/">Amazon S3 的坑</a>
           </li>
         
       </ul>
@@ -792,7 +796,7 @@ ga('send', 'pageview');
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2018 Adam Wen<br>
+      &copy; 2019 Adam Wen<br>
       Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
       .
       Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
