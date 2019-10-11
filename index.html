@@ -109,14 +109,14 @@ ga('send', 'pageview');
     <div class="article-entry" itemprop="articleBody">
       
         <p>之前看到不少 HHKB 蓝牙改造的 Blog，最近闲下来也打算将自己的 HHKB Pro 2 改造一番。目前市面上已知的方案有早期的  hasu 和最近国内作者推出的 ydkb，列表格做个简单的对比：</p>
-<p><img src="/images/hhkb/diff.jpg" alt="方案对比"></p>
+<p><img src="/images/hhkb/diff.png" alt="方案对比"></p>
 <p>由于我是 Karabiner 的用户，对于键盘「有可编程开关」这件事并没有特别追求，那对比结论就比较明显，选择了带 LED 灯与 USB Type-C 接口的 ydkb 方案下单。这可以让我通过 LED 查看键盘状态，也不再需要常备  Mini USB 线。</p>
 <p>改造本身的过程特别简单，只需要一个十字螺丝刀，从背面拧下 3 颗螺丝，就可以打开键盘。注意打开的过程中需要谨慎一些，键盘正反两面连接有一根彩虹排线，需要拔下来。拧下原有的主控上的螺丝，换上新主控与电池</p>
 <p><img src="/images/hhkb/processing.jpg" alt="安装电池与 ydkb 主控"></p>
 <p>重新接上排线并合盖拧螺丝，就算完成了整个硬件部分的改造。效果如下</p>
 <p><img src="/images/hhkb/final.jpg" alt="改造后效果"></p>
-<p>接下来就是自定义按键并生成固件刷入，登录 <a href="http://ydkb.io" target="_blank" rel="noopener">ydkb.io</a>(注意请强制使用 http 访问，https 的配置有问题，已反馈给作者），在默认键位基础上，定制了「蓝牙切换」按键，通过「Fn + w」的组合键在 Macbook Pro 与 iPad Pro 间快速切换<br><img src="/images/hhkb/ydkb.jpg" alt="定制「蓝牙切换」按键"></p>
-<p>定制完成后，下载固件，按住键盘的 Esc 键连接电脑，键盘会被挂载成为一个 USB 存储，删除原有固件，并将下载的移动到键盘<br><img src="/images/hhkb/finder.jpg" alt=""></p>
+<p>接下来就是自定义按键并生成固件刷入，登录 <a href="http://ydkb.io" target="_blank" rel="noopener">ydkb.io</a>(注意请强制使用 http 访问，https 的配置有问题，已反馈给作者），在默认键位基础上，定制了「蓝牙切换」按键，通过「Fn + w」的组合键在 Macbook Pro 与 iPad Pro 间快速切换<br><img src="/images/hhkb/ydkb.png" alt="定制「蓝牙切换」按键"></p>
+<p>定制完成后，下载固件，按住键盘的 Esc 键连接电脑，键盘会被挂载成为一个 USB 存储，删除原有固件，并将下载的移动到键盘<br><img src="/images/hhkb/finder.png" alt=""></p>
 <p>然后弹出该存储，就可以搜索到你的蓝牙 HHKB 键盘。</p>
 
       
