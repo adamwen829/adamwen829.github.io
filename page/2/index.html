@@ -86,6 +86,65 @@ ga('send', 'pageview');
     <div class="outer">
       <section id="main">
   
+    <article id="post-unicode-compatible" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/10/20/unicode-compatible/" class="article-date">
+  <time datetime="2014-10-20T03:42:05.000Z" itemprop="datePublished">2014-10-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/10/20/unicode-compatible/">字符串在 Python 2.x 和 3.x 下的适配</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>给 <a href="https://github.com/nvie/rq" target="_blank" rel="noopener">RQ</a> 提交了一个 <a href="https://github.com/nvie/rq/pull/438" target="_blank" rel="noopener">Pull Request</a> 来解决 issue#437 .</p>
+<p>最开始的提交 我做了以下的工作:</p>
+<ul>
+<li>找到问题所在</li>
+<li>写新的单元测试</li>
+<li>将相关串做 decode 操作</li>
+<li>跑单元测试通过, 提交 Pull Request</li>
+</ul>
+<p>然后….就遇到问题了, Travis 跑完发现 Python2.x 下都没问题, 但是 Python3.x 都跑不过, 原因很简单, python3.x 的时候已经不区分 string 和 unicode, 统一采用 unicode, 因此也取消了 decode 方法. 那么我们如何来同时适配 2.x 和 3.x 版本呢. 我想过很多方法, 但是都觉得不够优雅, 后来还是在 RQ 这个库本身里找到了答案.</p>
+<p>在 RQ 中, 对字符串的获取都会经过一个 as_text 的函数处理, 该函数位于 compat/__init__.py, 就是为了同时适配 2.x 和 3.x 版本, 函数如下:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> PY2:</span><br><span class="line">    <span class="comment"># Python 3.x and up</span></span><br><span class="line">    text_type = str</span><br><span class="line">    string_types = (str,)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">as_text</span><span class="params">(v)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> v <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">        <span class="keyword">elif</span> isinstance(v, bytes):</span><br><span class="line">            <span class="keyword">return</span> v.decode(<span class="string">'utf-8'</span>)</span><br><span class="line">        <span class="keyword">elif</span> isinstance(v, str):</span><br><span class="line">            <span class="keyword">return</span> v</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">'Unknown type %r'</span> % type(v))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decode_redis_hash</span><span class="params">(h)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> dict((as_text(k), h[k]) <span class="keyword">for</span> k <span class="keyword">in</span> h)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="comment"># Python 2.x</span></span><br><span class="line">    text_type = unicode</span><br><span class="line">    string_types = (str, unicode)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">as_text</span><span class="params">(v)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> v <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line">        <span class="keyword">return</span> v.decode(<span class="string">'utf-8'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decode_redis_hash</span><span class="params">(h)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> h</span><br></pre></td></tr></table></figure></p>
+<p>首先通过 six 这个库来判断 Python 版本, 然后根据版本的不同, 声明 as_text 方法的具体实现, 这样在整个库在处理字符串时, 不需要考虑版本差异, 直接调用 as_text 进行处理即可.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://www.darkof.com/2014/10/20/unicode-compatible/" data-id="ck1mg5nmw004pfaohhyokkamj" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="https://www.darkof.com/2014/10/20/unicode-compatible/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/unicode/">unicode</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-pyenv-virtualenv" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/10/17/pyenv-virtualenv/" class="article-date">
@@ -127,7 +186,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2014/10/17/pyenv-virtualenv/" data-id="cjy85vqdn00494goh4t9b0tf1" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2014/10/17/pyenv-virtualenv/" data-id="ck1mg5nmr004dfaoh5nimaevb" class="article-share-link">分享到</a>
       
 
       
@@ -198,7 +257,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2014/10/13/go-learning/" data-id="cjy85vqdd003m4gohp2faktxx" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2014/10/13/go-learning/" data-id="ck1mg5nmf003ifaoh0zkfpye3" class="article-share-link">分享到</a>
       
 
       
@@ -259,7 +318,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2014/10/10/postgres-snippet/" data-id="cjy85vqdm00454gohh4vwfmrw" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2014/10/10/postgres-snippet/" data-id="ck1mg5nmo0043faohq2ljl468" class="article-share-link">分享到</a>
       
 
       
@@ -310,7 +369,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2014/09/30/bye/" data-id="cjy85vqda003d4goh4fll6cst" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2014/09/30/bye/" data-id="ck1mg5nma0034faohykpd8skw" class="article-share-link">分享到</a>
       
 
       
@@ -391,7 +450,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2014/08/06/-e5-a6-82-e6-9e-9c-e6-98-af-e7-a8-8b-e5-ba-8f-e5-91-98-e5-81-9a-e4-ba-a7-e5-93-81-e7-bb-8f-e7-90-86/" data-id="cjy85vqc8000s4gohscwq7o3o" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2014/08/06/-e5-a6-82-e6-9e-9c-e6-98-af-e7-a8-8b-e5-ba-8f-e5-91-98-e5-81-9a-e4-ba-a7-e5-93-81-e7-bb-8f-e7-90-86/" data-id="ck1mg5nlc000vfaoh4cr5njw3" class="article-share-link">分享到</a>
       
 
       
@@ -459,7 +518,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2014/08/05/-e8-ae-b0-e5-bd-95-e4-b8-80-e4-b8-aa-e4-b8-8d-e5-ba-94-e8-af-a5-e7-9a-84-e5-a4-b1-e8-af-af/" data-id="cjy85vqcs00274gohsvhr127n" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2014/08/05/-e8-ae-b0-e5-bd-95-e4-b8-80-e4-b8-aa-e4-b8-8d-e5-ba-94-e8-af-a5-e7-9a-84-e5-a4-b1-e8-af-af/" data-id="ck1mg5nlv0026faoh4qk50s0r" class="article-share-link">分享到</a>
       
 
       
@@ -524,7 +583,7 @@ ga('send', 'pageview');
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2014/04/13/mock-e5-b0-8f-e8-ae-b0-e4-b8-80/" data-id="cjy85vqdj003y4gohsdwjvrzq" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2014/04/13/mock-e5-b0-8f-e8-ae-b0-e4-b8-80/" data-id="ck1mg5nmn0040faoha444robf" class="article-share-link">分享到</a>
       
 
       
@@ -637,7 +696,7 @@ we weren't trying to write it.`</pre>
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2013/12/18/-e5-86-99-e5-87-ba-e5-a5-bd-e7-9a-84-commit-message/" data-id="cjy85vqc5000m4gohhmerjewm" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2013/12/18/-e5-86-99-e5-87-ba-e5-a5-bd-e7-9a-84-commit-message/" data-id="ck1mg5nlb000tfaohlo384fmw" class="article-share-link">分享到</a>
       
 
       
@@ -693,7 +752,7 @@ we weren't trying to write it.`</pre>
     </div>
     <footer class="article-footer">
       
-        <a data-url="https://www.darkof.com/2013/12/17/-e9-92-88-e5-af-b9-e8-a1-8c-e4-b8-ba-e6-b5-8b-e8-af-95-e8-80-8c-e9-9d-9e-e5-ae-9e-e7-8e-b0/" data-id="cjy85vqct002b4goh8yc81k6h" class="article-share-link">分享到</a>
+        <a data-url="https://www.darkof.com/2013/12/17/-e9-92-88-e5-af-b9-e8-a1-8c-e4-b8-ba-e6-b5-8b-e8-af-95-e8-80-8c-e9-9d-9e-e5-ae-9e-e7-8e-b0/" data-id="ck1mg5nm4002rfaoh1t8ax6ys" class="article-share-link">分享到</a>
       
 
       
@@ -710,65 +769,10 @@ we weren't trying to write it.`</pre>
 
 
   
-    <article id="post-django-e5-8d-95-e5-85-83-e6-b5-8b-e8-af-95-e4-b8-ad-e7-9a-84client" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2013/12/12/django-e5-8d-95-e5-85-83-e6-b5-8b-e8-af-95-e4-b8-ad-e7-9a-84client/" class="article-date">
-  <time datetime="2013-12-12T01:33:00.000Z" itemprop="datePublished">2013-12-12</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/code-snippet/">code snippet</a>►<a class="article-category-link" href="/categories/code-snippet/django/">django</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2013/12/12/django-e5-8d-95-e5-85-83-e6-b5-8b-e8-af-95-e4-b8-ad-e7-9a-84client/">django单元测试中的Client</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>因为要测试的时候需要有不同ip的client来发请求测试 所以需要构造多个不同ip的Client的实例</p>
-<p>在django文档中没有找到, 从stackoverflow查到了一个<a href="http://stackoverflow.com/questions/14749418/how-to-specify-an-ip-address-with-django-test-client#answer-14749559" title="how to specify an ip address with django test client" target="_blank" rel="noopener">不错的答案</a>, 如下:</p>
-<p>[python]</p>
-<p>from django.test.client import Client</p>
-<p>#方法1: 构造实例的时候传入headers中的key value, 以后请求方法自动传递headers<br> client = HttpClient(REMOTE_ADDR=’127.0.0.1’)</p>
-<p>#方法2: 请求的时候附带额外参数声明headers<br> client.get(‘/path/‘, {‘param’:’foo’},<br>            **{‘HTTP_USER_AGENT’:’firefox-22’,<br>            ‘REMOTE_ADDR’:’127.0.0.1’})</p>
-<p>[/python]</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="https://www.darkof.com/2013/12/12/django-e5-8d-95-e5-85-83-e6-b5-8b-e8-af-95-e4-b8-ad-e7-9a-84client/" data-id="cjy85vqdc003j4goh0x5lvpua" class="article-share-link">分享到</a>
-      
-
-      
-        <a href="https://www.darkof.com/2013/12/12/django-e5-8d-95-e5-85-83-e6-b5-8b-e8-af-95-e4-b8-ad-e7-9a-84client/#disqus_thread" class="article-comment-link">评论</a>
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/django/">django</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/unittest/">unittest</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/">&laquo; 上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/">下一页 &raquo;</a>
+    <a class="extend prev" rel="prev" href="/">&laquo; 上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/">下一页 &raquo;</a>
   </nav>
 </section>
       
@@ -787,7 +791,7 @@ we weren't trying to write it.`</pre>
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/404/" style="font-size: 10px;">404</a> <a href="/tags/Decorator/" style="font-size: 10px;">Decorator</a> <a href="/tags/Duck-Typing/" style="font-size: 10px;">Duck_Typing</a> <a href="/tags/MongoDB/" style="font-size: 10px;">MongoDB</a> <a href="/tags/OO/" style="font-size: 10px;">OO</a> <a href="/tags/Python/" style="font-size: 16.67px;">Python</a> <a href="/tags/Regex/" style="font-size: 10px;">Regex</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/aws/" style="font-size: 10px;">aws</a> <a href="/tags/cPickle/" style="font-size: 10px;">cPickle</a> <a href="/tags/chm/" style="font-size: 10px;">chm</a> <a href="/tags/clash/" style="font-size: 10px;">clash</a> <a href="/tags/decorator/" style="font-size: 10px;">decorator</a> <a href="/tags/django/" style="font-size: 13.33px;">django</a> <a href="/tags/django-meta/" style="font-size: 10px;">django meta</a> <a href="/tags/float/" style="font-size: 10px;">float</a> <a href="/tags/go/" style="font-size: 10px;">go</a> <a href="/tags/http/" style="font-size: 10px;">http</a> <a href="/tags/jekyell/" style="font-size: 10px;">jekyell</a> <a href="/tags/linux/" style="font-size: 13.33px;">linux</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/mock/" style="font-size: 10px;">mock</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/postgres/" style="font-size: 10px;">postgres</a> <a href="/tags/pyenv/" style="font-size: 10px;">pyenv</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/qdu/" style="font-size: 10px;">qdu</a> <a href="/tags/requests/" style="font-size: 10px;">requests</a> <a href="/tags/s3/" style="font-size: 10px;">s3</a> <a href="/tags/sae/" style="font-size: 10px;">sae</a> <a href="/tags/snippets/" style="font-size: 10px;">snippets</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/unittest/" style="font-size: 13.33px;">unittest</a> <a href="/tags/v2ex/" style="font-size: 10px;">v2ex</a> <a href="/tags/virtualenv/" style="font-size: 10px;">virtualenv</a> <a href="/tags/代码风格再烂也烂不过这个政策/" style="font-size: 10px;">代码风格再烂也烂不过这个政策</a> <a href="/tags/公益/" style="font-size: 10px;">公益</a> <a href="/tags/冷/" style="font-size: 10px;">冷</a> <a href="/tags/呓语/" style="font-size: 10px;">呓语</a> <a href="/tags/多态/" style="font-size: 10px;">多态</a> <a href="/tags/安全/" style="font-size: 10px;">安全</a> <a href="/tags/开源/" style="font-size: 10px;">开源</a> <a href="/tags/浮点数/" style="font-size: 10px;">浮点数</a> <a href="/tags/腾讯微博/" style="font-size: 10px;">腾讯微博</a> <a href="/tags/装饰器/" style="font-size: 10px;">装饰器</a> <a href="/tags/运营商缓存/" style="font-size: 10px;">运营商缓存</a> <a href="/tags/重载/" style="font-size: 10px;">重载</a> <a href="/tags/闲言/" style="font-size: 10px;">闲言</a>
+      <a href="/tags/404/" style="font-size: 10px;">404</a> <a href="/tags/Decorator/" style="font-size: 10px;">Decorator</a> <a href="/tags/Duck-Typing/" style="font-size: 10px;">Duck_Typing</a> <a href="/tags/HHKB/" style="font-size: 10px;">HHKB</a> <a href="/tags/MongoDB/" style="font-size: 10px;">MongoDB</a> <a href="/tags/OO/" style="font-size: 10px;">OO</a> <a href="/tags/Python/" style="font-size: 16.67px;">Python</a> <a href="/tags/Regex/" style="font-size: 10px;">Regex</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/aws/" style="font-size: 10px;">aws</a> <a href="/tags/cPickle/" style="font-size: 10px;">cPickle</a> <a href="/tags/chm/" style="font-size: 10px;">chm</a> <a href="/tags/clash/" style="font-size: 10px;">clash</a> <a href="/tags/decorator/" style="font-size: 10px;">decorator</a> <a href="/tags/django/" style="font-size: 13.33px;">django</a> <a href="/tags/django-meta/" style="font-size: 10px;">django meta</a> <a href="/tags/float/" style="font-size: 10px;">float</a> <a href="/tags/go/" style="font-size: 10px;">go</a> <a href="/tags/http/" style="font-size: 10px;">http</a> <a href="/tags/jekyell/" style="font-size: 10px;">jekyell</a> <a href="/tags/linux/" style="font-size: 13.33px;">linux</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/mock/" style="font-size: 10px;">mock</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/postgres/" style="font-size: 10px;">postgres</a> <a href="/tags/pyenv/" style="font-size: 10px;">pyenv</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/qdu/" style="font-size: 10px;">qdu</a> <a href="/tags/requests/" style="font-size: 10px;">requests</a> <a href="/tags/s3/" style="font-size: 10px;">s3</a> <a href="/tags/sae/" style="font-size: 10px;">sae</a> <a href="/tags/snippets/" style="font-size: 10px;">snippets</a> <a href="/tags/unicode/" style="font-size: 10px;">unicode</a> <a href="/tags/unittest/" style="font-size: 13.33px;">unittest</a> <a href="/tags/v2ex/" style="font-size: 10px;">v2ex</a> <a href="/tags/virtualenv/" style="font-size: 10px;">virtualenv</a> <a href="/tags/代码风格再烂也烂不过这个政策/" style="font-size: 10px;">代码风格再烂也烂不过这个政策</a> <a href="/tags/公益/" style="font-size: 10px;">公益</a> <a href="/tags/冷/" style="font-size: 10px;">冷</a> <a href="/tags/呓语/" style="font-size: 10px;">呓语</a> <a href="/tags/多态/" style="font-size: 10px;">多态</a> <a href="/tags/安全/" style="font-size: 10px;">安全</a> <a href="/tags/开源/" style="font-size: 10px;">开源</a> <a href="/tags/浮点数/" style="font-size: 10px;">浮点数</a> <a href="/tags/腾讯微博/" style="font-size: 10px;">腾讯微博</a> <a href="/tags/装饰器/" style="font-size: 10px;">装饰器</a> <a href="/tags/运营商缓存/" style="font-size: 10px;">运营商缓存</a> <a href="/tags/重载/" style="font-size: 10px;">重载</a> <a href="/tags/闲言/" style="font-size: 10px;">闲言</a>
     </div>
   </div>
 
@@ -796,7 +800,7 @@ we weren't trying to write it.`</pre>
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">四月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/07/">七月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05/">五月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/02/">二月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/01/">一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/12/">十二月 2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">十一月 2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/09/">九月 2012</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">四月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">十二月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">十一月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08/">八月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/07/">七月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06/">六月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05/">五月 2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04/">四月 2013</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03/">三月 2013</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/02/">二月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/01/">一月 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/12/">十二月 2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11/">十一月 2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/10/">十月 2012</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/09/">九月 2012</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -806,6 +810,10 @@ we weren't trying to write it.`</pre>
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2019/10/12/hhkb-ble/">HHKB 无线改造新方案</a>
+          </li>
         
           <li>
             <a href="/2019/07/07/hulu-configuration/">关于软路由的一些配置</a>
@@ -821,10 +829,6 @@ we weren't trying to write it.`</pre>
         
           <li>
             <a href="/2016/08/14/mysql-offset/">mysql offset 为什么这么慢。。。</a>
-          </li>
-        
-          <li>
-            <a href="/2016/08/04/python-global-var/">Python 中的「全局变量」的小细节</a>
           </li>
         
       </ul>
